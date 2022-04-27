@@ -1,0 +1,60 @@
+name: Deploy Source
+on:
+  push:
+    branches: [ master ]
+    paths-ignore:
+      - 'config.json'
+jobs:
+  update_source_code:
+    runs-on: self-hosted
+    steps:
+    - name: Update source code
+      uses: actions/checkout@v2
+  copy_to_destination:
+    needs: update_source_code
+    runs-on: self-hosted
+    steps:
+    - name: Move source code
+      run: sudo cp -r /opt/actions-runner/_work/money-alert/money-alert /opt
+  cleanup_source_code:
+    needs: copy_to_destination
+    runs-on: self-hosted
+    steps:
+    - name: Cleanup source code directory
+      run: sudo rm -r /opt/actions-runner/_work/money-alert
+  set_api_and_email_variables:
+    needs: copy_to_destination
+    runs-on: self-hosted
+    steps:
+      - shell: bash
+        env:
+          API_BITTREX_KEY: ${{ secrets.API_BITTREX_KEY }}
+          API_BITTREX_SECRET: ${{ secrets.API_BITTREX_SECRET }}
+          MONEY_ALERT_EMAIL_SECRET: ${{ secrets.MONEY_ALERT_EMAIL_SECRET }}
+          MONEY_ALERT_EMAIL_USERNAME: ${{ secrets.MONEY_ALERT_EMAIL_USERNAME }}
+          PERSONAL_EMAILS: ${{ secrets.PERSONAL_EMAILS }}
+        run: |
+          sudo sed -i "s/API_BITTREX_KEY/$API_BITTREX_KEY/g" /opt/money-alert/config.json
+          sudo sed -i "s/API_BITTREX_SECRET/$API_BITTREX_SECRET/g" /opt/money-alert/config.json
+          sudo sed -i "s/MONEY_ALERT_EMAIL_SECRET/$MONEY_ALERT_EMAIL_SECRET/g" /opt/money-alert/config.json
+          sudo sed -i "s/MONEY_ALERT_EMAIL_USERNAME/$MONEY_ALERT_EMAIL_USERNAME/g" /opt/money-alert/config.json
+          sudo sed -i "s/PERSONAL_EMAILS/$PERSONAL_EMAILS/g" /opt/money-alert/config.json
+  set_images_variables:
+    needs: copy_to_destination
+    runs-on: self-hosted
+    steps:
+      - shell: bash
+        env:
+          MONEY_ALERT_LOGO: ${{ secrets.MONEY_ALERT_LOGO }}
+          MONEY_ALERT_ARROW_UP: ${{ secrets.MONEY_ALERT_ARROW_UP }}
+          MONEY_ALERT_ARROW_DOWN: ${{ secrets.MONEY_ALERT_ARROW_DOWN }}
+        run: |
+          sudo sed -i "s/MONEY_ALERT_LOGO/$MONEY_ALERT_LOGO/g" /opt/money-alert/email_template.html
+          sudo sed -i "s/MONEY_ALERT_ARROW_UP/$MONEY_ALERT_ARROW_UP/g" /opt/money-alert/tests/unit_test.py
+          sudo sed -i "s/MONEY_ALERT_ARROW_DOWN/$MONEY_ALERT_ARROW_DOWN/g" /opt/money-alert/tests/unit_test.py
+  restart_linux_service:
+    needs: [set_api_and_email_variables, set_images_variables]
+    runs-on: self-hosted
+    steps:
+    - name: Restart linux service
+      run: sudo systemctl restart money-alert-daily; sudo systemctl restart money-alert-watchers;

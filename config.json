@@ -1,0 +1,65 @@
+{
+    "log_level": "INFO",
+    "email": {
+        "hostname": "smtp.gmail.com",
+        "username": "MONEY_ALERT_EMAIL_USERNAME",
+        "secret": "MONEY_ALERT_EMAIL_SECRET"
+    },
+    "clients": {
+        "bittrex": {
+            "base_url": "https://api.bittrex.com/v3",
+            "key": "API_BITTREX_KEY",
+            "secret": "API_BITTREX_SECRET",
+            "rate_limit_in_secs": 60
+        },
+        "blockchain": {
+            "base_url": "https://blockchain.info",
+            "rate_limit_in_secs": 60
+        },
+        "blockchain-v3": {
+            "base_url": "https://api.blockchain.com/v3/exchange",
+            "rate_limit_in_secs": 60
+        },
+        "coingecko": {
+            "base_url": "https://api.coingecko.com/api/v3",
+            "rate_limit_in_secs": 50
+        }
+    },
+    "report_settings": {
+        "coingecko_trender_appearance_threshold": 5,
+        "moving_average": [5, 20, 50, 100, 200],
+        "run_time": "10:00",
+        "watcher_threshold": -5
+    },
+    "coin_list": {
+        "ada": "cardano",
+        "amp": "amp-token",
+        "algo": "algorand",
+        "atom": "cosmos",
+        "bal": "balancer",
+        "bat": "basic-attention-token",
+        "btc": "bitcoin",
+        "comp": "compound-governance-token",
+        "eos": "eos",
+        "eth": "ethereum",
+        "grt": "the-graph",
+        "hbar": "hedera-hashgraph",
+        "link": "chainlink",
+        "matic": "matic-network",
+        "mkr": "maker",
+        "xlm": "stellar",
+        "xrp": "ripple",
+        "xtz": "tezos",
+        "zrx": "0x"
+    },
+    "emails": ["PERSONAL_EMAILS"],
+    "future_features": [
+        "Refactor the email_handler",
+        "Modify dinosaur footprints to include a BTC threshold",
+        "Specify when dormant wallets become active for dinosaur footprints - color code row older than 1 year",
+        "Split buying and selling of BTC in dinosaur footprints",
+        "Remove exchange wallets from dinosaur footprints",
+        "Run BTC top wallets method in dinosaur footprints once a week instead of every day",
+        "Remove the received change column from dinosaur footprints"
+    ]
+}
