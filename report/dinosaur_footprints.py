@@ -27,7 +27,7 @@ class DinosaurFootprints(report.base_report.Report):
         self.__scrape_website('https://99bitcoins.com/bitcoin-rich-list-top1000/', 't99btc-rich-list')
         self.__add_new_wallet_addresses()
         self.__get_wallet_information()
-        self.__send_notification_email()
+        self.__attach_table_to_email()
 
     def __bitinfocharts_pull_named_wallets(self):
         bitinfo_urls = ['']
@@ -142,7 +142,7 @@ class DinosaurFootprints(report.base_report.Report):
 
         db_wallet_list = dict()
         for wallet in db_wallets:
-            db_wallet_list[wallet[0]] = {'balance': wallet[1], 'total_received': wallet[2]}
+            db_wallet_list[wallet[0]] = {'balance': wallet[1]}
 
         # Pull wallet data from blockchain API
         blockchain_wallet_data = dict()
@@ -163,26 +163,28 @@ class DinosaurFootprints(report.base_report.Report):
 
         for wallet_address, wallet_data in blockchain_wallet_data.items():
             # If DB is missing balance or total_received, add to DB and continue
-            if db_wallet_list[wallet_address]['balance'] is not None or db_wallet_list[wallet_address]['total_received'] is not None:
+            if db_wallet_list[wallet_address]['balance'] is not None:
                 self.__compare_wallet_information(db_wallet_list[wallet_address], wallet_data, wallet_address)
 
-            update_statement = 'UPDATE top_bitcoin_wallet_report_data SET balance = ?, total_received = ? WHERE wallet_address = ?'
-            con.cursor().execute(update_statement, tuple([wallet_data['final_balance'], wallet_data['total_received'], wallet_address]))
+            update_statement = 'UPDATE top_bitcoin_wallet_report_data SET balance = ? WHERE wallet_address = ?'
+            con.cursor().execute(update_statement, tuple([wallet_data['final_balance'], wallet_address]))
             con.commit()
 
+        if len(self.notify_wallets) > 0:
+            self.notify_wallets = dict(sorted(self.notify_wallets.items(), key=lambda item: item[1]))
+
     def __compare_wallet_information(self, db_wallet, blockchain_wallet, wallet_address):
-        if db_wallet['balance'] != blockchain_wallet['final_balance'] or db_wallet['total_received'] != blockchain_wallet['total_received']:
+        if db_wallet['balance'] != blockchain_wallet['final_balance']:
             balance_diff = util.convert_satoshis_to_btc(blockchain_wallet['final_balance'] - db_wallet['balance'])
-            total_received_diff = util.convert_satoshis_to_btc(blockchain_wallet['total_received'] - db_wallet['total_received'])
 
-            if (balance_diff > init.config['btc_threshold'] or balance_diff < -init.config['btc_threshold']) or (total_received_diff > init.config['btc_threshold'] or total_received_diff < -init.config['btc_threshold']):
-                self.notify_wallets[wallet_address] = {'balance_change': balance_diff, 'total_received_change': total_received_diff}
+            if balance_diff > init.config['btc_threshold'] or balance_diff < -init.config['btc_threshold']:
+                self.notify_wallets[wallet_address] = db_wallet['balance']
 
-    def __send_notification_email(self):
+    def __attach_table_to_email(self):
         init.logger.info(f'Dinosaur Footprints: Notification Wallets {len(self.notify_wallets)}')
         if len(self.notify_wallets) == 0:
             return
 
-        table = self.build_html_table(['Wallet', 'Balance Change', 'Received Change'], self.notify_wallets, 'dinosaur_footprints')
+        table = self.build_html_table(['Wallet', 'Balance Change'], self.notify_wallets, 'dinosaur_footprints')
         gmail = email_handler.GMail()
         gmail.add_email_content('Dinosaur Footprints', table)

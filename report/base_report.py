@@ -55,7 +55,10 @@ class Report:
         elif report_name == 'dinosaur_footprints':
             for key, value in body.items():
                 table += '<tr><td><a href="https://www.blockchain.com/btc/address/' + str(key) + '">' + key[:5] + '...' + key[-5:] + '</a></td>'
-                table += '<td>' + str(value['balance_change']) + '</td><td>' + str(value['total_received_change']) + '</td></tr>'
+                if value > 0:
+                    table += '<td class="positive">' + str(value) + '</td></tr>'
+                else:
+                    table += '<td class="negative">' + str(value) + '</td></tr>'
 
         table += '</table>'
         return table
