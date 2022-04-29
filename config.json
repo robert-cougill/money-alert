@@ -60,9 +60,6 @@
         "Remove exchange wallets from dinosaur footprints",
         "Run BTC top wallets method in dinosaur footprints once a week instead of every day",
         "Completely new report for gold and silver price tracking",
-        "Stock ticker - daily opening price",
-        "Modify dinosaur footprints to include a BTC threshold",
-        "Split buying and selling of BTC in dinosaur footprints",
-        "Remove the received change column from dinosaur footprints"
+        "Stock ticker - daily opening price"
     ]
 }
