@@ -177,7 +177,7 @@ class DinosaurFootprints(report.base_report.Report):
         if db_wallet['balance'] != blockchain_wallet['final_balance']:
             balance_diff = util.convert_satoshis_to_btc(blockchain_wallet['final_balance'] - db_wallet['balance'])
 
-            if balance_diff > init.config['btc_threshold'] or balance_diff < -init.config['btc_threshold']:
+            if balance_diff > init.config['report_settings']['btc_threshold'] or balance_diff < -init.config['report_settings']['btc_threshold']:
                 self.notify_wallets[wallet_address] = db_wallet['balance']
 
     def __attach_table_to_email(self):
