@@ -175,7 +175,7 @@ class DinosaurFootprints(report.base_report.Report):
             balance_diff = util.convert_satoshis_to_btc(blockchain_wallet['final_balance'] - db_wallet['balance'])
             total_received_diff = util.convert_satoshis_to_btc(blockchain_wallet['total_received'] - db_wallet['total_received'])
 
-            if (balance_diff > 1 or balance_diff < -1) or (total_received_diff > 1 or total_received_diff < -1):
+            if (balance_diff > init.config['btc_threshold'] or balance_diff < -init.config['btc_threshold']) or (total_received_diff > init.config['btc_threshold'] or total_received_diff < -init.config['btc_threshold']):
                 self.notify_wallets[wallet_address] = {'balance_change': balance_diff, 'total_received_change': total_received_diff}
 
     def __send_notification_email(self):
