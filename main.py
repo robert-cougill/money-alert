@@ -99,3 +99,6 @@ elif '--watchers' in sys.argv:
         gmail.build_and_send_gmail(init.config['emails'], 'Application Crash')
         init.logger.exception(f'Application Crash: {e}')
         quit()
+
+elif '--pull-named-wallets' in sys.argv:
+    report.dinosaur_footprints.DinosaurFootprints().pull_named_wallets()

@@ -21,13 +21,15 @@ class DinosaurFootprints(report.base_report.Report):
 
     def run(self):
         init.logger.debug('Running dinosaur footprints report')
-        self.__bitinfocharts_pull_named_wallets()
         self.__scrape_website('https://btc.com/stats/rich-list', 'table')
         self.__scrape_website('https://99bitcoins.com/bitcoin-rich-list-top500/', 't99btc-rich-list')
         self.__scrape_website('https://99bitcoins.com/bitcoin-rich-list-top1000/', 't99btc-rich-list')
         self.__add_new_wallet_addresses()
         self.__get_wallet_information()
         self.__attach_table_to_email()
+
+    def pull_named_wallets(self):
+        self.__bitinfocharts_pull_named_wallets()
 
     def __bitinfocharts_pull_named_wallets(self):
         bitinfo_urls = ['']
