@@ -57,8 +57,6 @@
     "future_features": [
         "Refactor the email_handler",
         "Specify when dormant wallets become active for dinosaur footprints - color code row older than 1 year",
-        "Remove exchange wallets from dinosaur footprints",
-        "Run BTC top wallets method in dinosaur footprints once a week instead of every day",
         "Completely new report for gold and silver price tracking",
         "Stock ticker - daily opening price"
     ]
