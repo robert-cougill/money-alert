@@ -54,8 +54,7 @@ class DinosaurFootprints(report.base_report.Report):
         unique_links = list(set(bitinfocharts_wallet_links))
 
         for unique_link in unique_links:
-            if unique_link.split('/')[-1].isnumeric() is False:
-                named_bitinfocharts_links += [unique_link]
+            named_bitinfocharts_links += [unique_link]
 
         for named_link in named_bitinfocharts_links:
             try:
@@ -79,13 +78,18 @@ class DinosaurFootprints(report.base_report.Report):
         # Make sure we didn't miss any addresses already in the database
         for address in db_wallet_addresses:
             for exchange_name, exchange_wallet_address in exchange_wallet_addresses.items():
-                if address in exchange_wallet_address:
+                if address in exchange_wallet_address and exchange_name.isnumeric():
+                    self.insertion_wallet_addresses.append((address, 1, 'Unknown'))
+                elif address in exchange_wallet_address and exchange_name.isnumeric() is False:
                     self.insertion_wallet_addresses.append((address, 1, exchange_name))
 
         # Insert all the Exchange wallet addresses as well
         for name, address in exchange_wallet_addresses.items():
             for value in address:
-                self.insertion_wallet_addresses.append((value, 1, name))
+                if name.isnumeric():
+                    self.insertion_wallet_addresses.append((value, 1, 'Unknown'))
+                elif name.isnumeric() is False:
+                    self.insertion_wallet_addresses.append((value, 1, name))
 
         con.cursor().executemany('INSERT INTO top_bitcoin_wallet_report_data (wallet_address, exchange_wallet, exchange_name) VALUES(?, ?, ?) ON CONFLICT (wallet_address) DO UPDATE SET (wallet_address, exchange_wallet, exchange_name) = (excluded.wallet_address, excluded.exchange_wallet, excluded.exchange_name)', self.insertion_wallet_addresses)
         con.commit()
