@@ -30,12 +30,14 @@ jobs:
         env:
           API_BITTREX_KEY: ${{ secrets.API_BITTREX_KEY }}
           API_BITTREX_SECRET: ${{ secrets.API_BITTREX_SECRET }}
+          API_YAHOO_KEY: ${{ secrets.API_YAHOO_KEY }}
           MONEY_ALERT_EMAIL_SECRET: ${{ secrets.MONEY_ALERT_EMAIL_SECRET }}
           MONEY_ALERT_EMAIL_USERNAME: ${{ secrets.MONEY_ALERT_EMAIL_USERNAME }}
           PERSONAL_EMAILS: ${{ secrets.PERSONAL_EMAILS }}
         run: |
           sudo sed -i "s/API_BITTREX_KEY/$API_BITTREX_KEY/g" /opt/money-alert/config.json
           sudo sed -i "s/API_BITTREX_SECRET/$API_BITTREX_SECRET/g" /opt/money-alert/config.json
+          sudo sed -i "s/API_YAHOO_KEY/API_YAHOO_KEY/g" /opt/money-alert/config.json
           sudo sed -i "s/MONEY_ALERT_EMAIL_SECRET/$MONEY_ALERT_EMAIL_SECRET/g" /opt/money-alert/config.json
           sudo sed -i "s/MONEY_ALERT_EMAIL_USERNAME/$MONEY_ALERT_EMAIL_USERNAME/g" /opt/money-alert/config.json
           sudo sed -i "s/PERSONAL_EMAILS/$PERSONAL_EMAILS/g" /opt/money-alert/config.json
