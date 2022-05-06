@@ -64,7 +64,6 @@
     "future_features": [
         "Refactor the email_handler",
         "Specify when dormant wallets become active for dinosaur footprints - color code row older than 1 year",
-        "Completely new report for gold and silver price tracking",
-        "Stock ticker - daily opening price"
+        "Completely new report for gold and silver price tracking"
     ]
 }
