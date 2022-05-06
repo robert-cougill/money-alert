@@ -31,7 +31,7 @@ class BaseAPI:
         int(524)
     ]
 
-    def request_data(self, client: enums.APIClient, endpoint: str, method: enums.RequestMethod = enums.RequestMethod.GET, endpoint_args='', params: typing.Optional[typing.Dict] = None, body: typing.Optional[typing.Dict] = None):
+    def request_data(self, client: enums.APIClient, endpoint: str, method: enums.RequestMethod = enums.RequestMethod.GET, endpoint_args='', params: typing.Optional[typing.Dict] = None, body: typing.Optional[typing.Dict] = None, use_secondary_url: bool = False):
         base_url = init.config['clients'][client.value]['base_url']
 
         # region API Rate Limiting
@@ -100,6 +100,22 @@ class BaseAPI:
 
             return response
         # region Bittrex API
+
+        # region Yahoo Finance API
+        if client == enums.APIClient.YAHOOFINANCE:
+            if use_secondary_url:
+                base_url = init.config['clients'][client.value]['base_url_optional']
+
+            init.logger.debug(f'Yahoo Finance endpoint called: {base_url}/{endpoint}')
+            url = self.__build_url(base_url, endpoint, endpoint_args, params)
+
+            response = requests.request(method.value, url, params=params)
+            self.__check_response_code(url, response.status_code)
+            if response.status_code in self.CONST_HTTP_ERROR_CODES:
+                response = self.__retry_request(method, url)
+
+            return response
+        # region Yahoo Finance API
 
     def __retry_request(self, method: enums.RequestMethod = enums.RequestMethod.GET, url: str = None, params: typing.Optional[typing.Dict] = None, headers: typing.Any = None, body: typing.Optional[typing.Dict] = None):
         for i in range(1, 3):
