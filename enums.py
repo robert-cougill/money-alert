@@ -27,7 +27,7 @@ class DataInterval(enum.Enum):
     DAILY = 'daily'
 
 
-class YahooDataTimePeriod(enum.Enum):
+class TimePeriod(enum.Enum):
     ONE_DAY = '1D'
     FIVE_DAY = '5D'
     ONE_MONTH = '1M'

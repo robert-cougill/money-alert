@@ -60,3 +60,13 @@ def get_report_run_time(report_run_time: str) -> int:
 
 def configure_file_path(file_location: str):
     return os.path.join(init.project_directory, file_location)
+
+
+def list_chart_files(directory: str):
+    return os.listdir(directory)
+
+
+def remove_charts_from_directory(directory: str):
+    files = list_chart_files(directory)
+    for file in files:
+        os.remove(directory + file)

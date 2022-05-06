@@ -23,6 +23,12 @@
         "coingecko": {
             "base_url": "https://api.coingecko.com/api/v3",
             "rate_limit_in_secs": 50
+        },
+        "yahoo-finance": {
+            "base_url": "https://yfapi.net",
+            "base_url_secondary": "https://alpha.financeapi.net",
+            "key": "API_YAHOO_KEY",
+            "rate_limit_in_secs": 60
         }
     },
     "report_settings": {
@@ -53,6 +59,7 @@
         "xtz": "tezos",
         "zrx": "0x"
     },
+    "stock_symbols": ["LVOX"],
     "emails": ["PERSONAL_EMAILS"],
     "future_features": [
         "Refactor the email_handler",

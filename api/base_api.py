@@ -12,7 +12,8 @@ class BaseAPI:
         enums.APIClient.COINGECKO: round(util.timestamp()),
         enums.APIClient.BITTREX: round(util.timestamp()),
         enums.APIClient.BLOCKCHAIN: round(util.timestamp()),
-        enums.APIClient.BLOCKCHAIN_V3: round(util.timestamp())
+        enums.APIClient.BLOCKCHAIN_V3: round(util.timestamp()),
+        enums.APIClient.YAHOOFINANCE: round(util.timestamp())
     }
 
     CONST_STATUS_OK = int(200)
@@ -104,15 +105,20 @@ class BaseAPI:
         # region Yahoo Finance API
         if client == enums.APIClient.YAHOOFINANCE:
             if use_secondary_url:
-                base_url = init.config['clients'][client.value]['base_url_optional']
+                base_url = init.config['clients'][client.value]['base_url_secondary']
 
             init.logger.debug(f'Yahoo Finance endpoint called: {base_url}/{endpoint}')
             url = self.__build_url(base_url, endpoint, endpoint_args, params)
 
-            response = requests.request(method.value, url, params=params)
+            headers = {
+                'X-API-KEY': init.config['clients'][client.value]['key'],
+                'Content-Type': 'application/json',
+            }
+
+            response = requests.request(method.value, url, headers=headers)
             self.__check_response_code(url, response.status_code)
             if response.status_code in self.CONST_HTTP_ERROR_CODES:
-                response = self.__retry_request(method, url)
+                response = self.__retry_request(method, url, params, headers)
 
             return response
         # region Yahoo Finance API

@@ -9,14 +9,11 @@ import util
 class ChartBuilder:
     CONST_CHART_FILE_DIRECTORY = util.configure_file_path('report/report_data/charts/')
 
-    def __init__(self):
-        logging.getLogger().setLevel(level=logging.INFO)
+    def build_charts_for_report(self, asset_history, use_title_case: bool = True):
+        for asset, historical_data in asset_history.items():
+            self.build_single_chart(asset, historical_data, use_title_case)
 
-    def build_charts_for_moving_averages(self, coin_history):
-        for coin, history in coin_history.items():
-            self.build_single_chart(coin, history)
-
-    def build_single_chart(self, coin_name: str, historic_data):
+    def build_single_chart(self, asset_name: str, historic_data: list, use_title_case: bool = True):
         if len(historic_data) == 0:
             return
 
@@ -32,7 +29,12 @@ class ChartBuilder:
         plt.set_loglevel('info')
         fig, ax = plt.subplots(figsize=(10, 8))
         ax.set_xlim(len(x), 0)
-        ax.set(title=coin_name.replace('-', ' ').title(), xlabel='Days', ylabel='Price (USD)')
+
+        if use_title_case:
+            ax.set(title=asset_name.replace('-', ' ').title(), xlabel='Days', ylabel='Price (USD)')
+        else:
+            ax.set(title=asset_name, xlabel='Days', ylabel='Price (USD)')
+
 
         # Plot list, min, and max values
         ax.plot(x, historic_data, linestyle='-', color='#179de2')
@@ -58,12 +60,4 @@ class ChartBuilder:
                 box_alignment=(0., 0.5),
                 arrowprops=dict(arrowstyle='-', color='gray')))
 
-        plt.savefig(self.CONST_CHART_FILE_DIRECTORY + coin_name + '.png')
-
-    def list_chart_files(self):
-        return os.listdir(self.CONST_CHART_FILE_DIRECTORY)
-
-    def remove_charts_from_directory(self):
-        files = self.list_chart_files()
-        for file in files:
-            os.remove(self.CONST_CHART_FILE_DIRECTORY + file)
+        plt.savefig(self.CONST_CHART_FILE_DIRECTORY + asset_name + '.png')
