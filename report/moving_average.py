@@ -5,11 +5,13 @@ import email_handler
 import init
 import json
 import report.base_report
+import util
 
 
 class MovingAverages(report.base_report.Report):
     CONST_REPORT = 'moving_average'
     CONST_REPORT_TITLE = 'Moving Average'
+    CONST_CHART_FILE_DIRECTORY = util.configure_file_path('report/report_data/charts/')
 
     def __init__(self):
         report.base_report.Report.__init__(self)
@@ -25,7 +27,7 @@ class MovingAverages(report.base_report.Report):
         init.logger.debug('Running Moving Average Report')
         self.__validate_report_data()
 
-        self.charts.build_charts_for_moving_averages(self.coin_history)
+        self.charts.build_charts_for_report(self.coin_history)
 
         coins = dict()
         for coin, price in self.coin_history.items():
@@ -34,12 +36,12 @@ class MovingAverages(report.base_report.Report):
         sorted_coins = dict(sorted(coins.items(), key=lambda item: item[1], reverse=True))
         ordered_coins = sorted_coins.keys()
 
-        image_body = self.embed_images(self.charts.list_chart_files(), ordered_coins)
+        image_body = self.embed_images(util.list_chart_files(self.CONST_CHART_FILE_DIRECTORY), ordered_coins)
         gmail = email_handler.GMail()
         gmail.add_email_content('Moving Averages', image_body)
         gmail.build_and_send_gmail(init.config['emails'], 'Moving Averages', None, True)
 
-        self.charts.remove_charts_from_directory()
+        util.remove_charts_from_directory(self.CONST_CHART_FILE_DIRECTORY)
 
     def __validate_report_data(self):
         self.__read_data_from_db()

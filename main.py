@@ -5,6 +5,7 @@ import report.dinosaur_footprints
 import report.public_company_holdings
 import report.dip_watcher
 import report.moving_average
+import report.stock_tracker
 import sys
 import tests.unit_test
 import time
@@ -34,14 +35,17 @@ elif '--run-now' in sys.argv:
         trending_report.email_trenders = True
         public_holdings = report.public_company_holdings.PublicCompanyHoldings()
         dinosaur_report = report.dinosaur_footprints.DinosaurFootprints()
+        stock_tracker = report.stock_tracker.StockTracker()
 
         init.scheduler.enter(0, 1, moving_average_report.run)
         init.scheduler.enter(0, 1, trending_report.run)
         init.scheduler.enter(0, 1, dinosaur_report.run)
         init.scheduler.enter(0, 1, public_holdings.run)
+        init.scheduler.enter(0, 1, stock_tracker.run)
         init.scheduler.run()
 
-        gmail.build_and_send_gmail(init.config['emails'], '24 Hour Reports - Forced Run')
+        gmail.build_and_send_gmail(init.config['emails'], '24 Hour Reports - Forced Run', None, True)
+        stock_tracker.cleanup_charts()
         init.logger.info('Emails Sent')
 
     except Exception as e:
@@ -62,6 +66,7 @@ elif '--daily' in sys.argv:
         trending_report = report.coingecko_trending.Trending()
         public_holdings = report.public_company_holdings.PublicCompanyHoldings()
         dinosaur_report = report.dinosaur_footprints.DinosaurFootprints()
+        stock_tracker = report.stock_tracker.StockTracker()
 
         while True:
             run_time = util.get_report_run_time(init.config['report_settings']['run_time'])
@@ -71,9 +76,11 @@ elif '--daily' in sys.argv:
             init.scheduler.enter(run_time, 1, trending_report.run)
             init.scheduler.enter(run_time, 1, dinosaur_report.run)
             init.scheduler.enter(run_time, 1, public_holdings.run)
+            init.scheduler.enter(run_time, 1, stock_tracker.run)
             init.scheduler.run()
 
-            gmail.build_and_send_gmail(init.config['emails'], '24 Hour Reports')
+            gmail.build_and_send_gmail(init.config['emails'], '24 Hour Reports', None, True)
+            stock_tracker.cleanup_charts()
             init.logger.info('Emails Sent')
 
     except Exception as e:
