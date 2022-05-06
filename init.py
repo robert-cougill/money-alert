@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import pathlib
+import re
 import sched
 import sys
 import time
@@ -11,6 +12,8 @@ global coin_list
 global config
 global email_content
 global logger
+global money_alert_arrow_down
+global money_alert_arrow_up
 global project_directory
 global scheduler
 
@@ -33,6 +36,10 @@ def init():
 
 
 def set_environment_variables():
+    global money_alert_arrow_down
+    money_alert_arrow_down = os.getenv('MONEY_ALERT_ARROW_DOWN')
+    global money_alert_arrow_up
+    money_alert_arrow_up = os.getenv('MONEY_ALERT_ARROW_UP')
     global logger
     logger = logging.getLogger('money-alert')
     if '--dev' in sys.argv or '--run-now' in sys.argv:
@@ -48,9 +55,17 @@ def set_environment_variables():
 def load_config():
     global config
     config_path = util.configure_file_path('config.json')
-    config_file = open(config_path, 'r')
-    config = json.load(config_file)
-    config_file.close()
+    with open(config_path, 'r') as config_file:
+        replacements = {
+            "API_BITTREX_KEY": os.getenv('API_BITTREX_KEY'),
+            "API_BITTREX_SECRET": os.getenv('API_BITTREX_SECRET'),
+            "MONEY_ALERT_EMAIL_SECRET": os.getenv('MONEY_ALERT_EMAIL_SECRET'),
+            "MONEY_ALERT_EMAIL_USERNAME": os.getenv('MONEY_ALERT_EMAIL_USERNAME'),
+            "PERSONAL_EMAILS": os.getenv('PERSONAL_EMAILS')
+        }
+        replacements = dict((re.escape(k), v) for k, v in replacements.items())
+        pattern = re.compile("|".join(replacements.keys()))
+        config = json.loads(pattern.sub(lambda m: replacements[re.escape(m.group(0))], config_file.read()))
 
 
 def build_coin_list():
