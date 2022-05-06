@@ -59,6 +59,7 @@ def load_config():
         replacements = {
             "API_BITTREX_KEY": os.getenv('API_BITTREX_KEY'),
             "API_BITTREX_SECRET": os.getenv('API_BITTREX_SECRET'),
+            "API_YAHOO_KEY": os.getenv('API_YAHOO_KEY'),
             "MONEY_ALERT_EMAIL_SECRET": os.getenv('MONEY_ALERT_EMAIL_SECRET'),
             "MONEY_ALERT_EMAIL_USERNAME": os.getenv('MONEY_ALERT_EMAIL_USERNAME'),
             "PERSONAL_EMAILS": os.getenv('PERSONAL_EMAILS')
