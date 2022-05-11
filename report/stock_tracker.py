@@ -19,6 +19,9 @@ class StockTracker(report.base_report.Report):
             historical_data = json.loads(self.yahoofinance.get_historical_data(symbol))
             closing_values = []
 
+            if 'attributes' not in historical_data:
+                return
+
             history = historical_data['attributes']
             for key in sorted(history.keys()):
                 closing_values.append(history[key]['close'])
