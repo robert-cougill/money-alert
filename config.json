@@ -63,7 +63,6 @@
     "emails": ["PERSONAL_EMAILS"],
     "future_features": [
         "Refactor the email_handler",
-        "Reconfigure to accept local environmental variables as well as the build agent",
         "Specify when dormant wallets become active for dinosaur footprints - color code row older than 1 year",
         "Completely new report for gold and silver price tracking"
     ]
