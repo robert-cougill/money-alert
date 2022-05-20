@@ -22,7 +22,7 @@
         },
         "coingecko": {
             "base_url": "https://api.coingecko.com/api/v3",
-            "requests_per_minute": 50
+            "requests_per_minute": 45
         },
         "yahoo-finance": {
             "base_url": "https://yfapi.net",
