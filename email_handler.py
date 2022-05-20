@@ -56,6 +56,7 @@ class GMail:
         email_template = file.read()
         file.close()
 
+        email_template = email_template.replace('MONEY_ALERT_LOGO', os.getenv('MONEY_ALERT_LOGO'))
         template = email_template.replace('{{{body_content}}}', report_sections)
         return template
 
