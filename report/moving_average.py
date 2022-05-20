@@ -38,8 +38,8 @@ class MovingAverages(report.base_report.Report):
 
         image_body = self.embed_images(util.list_chart_files(self.CONST_CHART_FILE_DIRECTORY), ordered_coins)
         gmail = email_handler.GMail()
-        gmail.add_email_content('Moving Averages', image_body)
-        gmail.build_and_send_gmail(init.config['emails'], 'Moving Averages', None, True)
+        gmail.add_report_to_email('Moving Averages', image_body)
+        gmail.send_email('Moving Averages')
 
         util.remove_charts_from_directory(self.CONST_CHART_FILE_DIRECTORY)
 

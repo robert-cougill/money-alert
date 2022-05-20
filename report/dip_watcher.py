@@ -60,4 +60,4 @@ class DipWatcher(report.base_report.Report):
             if (time.time() - self.last_email_sent) > 600:
                 self.last_email_sent = time.time()
                 gmail = email_handler.GMail()
-                gmail.build_and_send_gmail(init.config['emails'], 'BTC has dipped! Current Price: ' + '{:.2f}'.format(self.price_dict['bitcoin'][0]))
+                gmail.build_and_send_gmail('BTC has dipped! Current Price: ' + '{:.2f}'.format(self.price_dict['bitcoin'][0]))

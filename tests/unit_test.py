@@ -20,7 +20,7 @@ class UnitTest:
         init.scheduler.run()
 
         init.logger.debug('Sending email')
-        self.gmail.build_and_send_gmail(init.config['emails'], 'Money Alert - Unit Test')
+        self.gmail.build_and_send_gmail('Money Alert - Unit Test')
 
     def __unit_test_health_check(self):
         headers = ['Bittrex', 'Coingecko']

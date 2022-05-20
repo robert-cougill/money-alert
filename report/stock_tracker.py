@@ -32,7 +32,7 @@ class StockTracker(report.base_report.Report):
         self.charts.build_charts_for_report(self.stock_history, False)
         image_body = self.embed_images(util.list_chart_files(self.CONST_CHART_FILE_DIRECTORY), init.config['stock_symbols'])
         gmail = email_handler.GMail()
-        gmail.add_email_content('Stock Tracker', image_body)
+        gmail.add_report_to_email('Stock Tracker', image_body)
 
     def cleanup_charts(self):
         util.remove_charts_from_directory(self.CONST_CHART_FILE_DIRECTORY)

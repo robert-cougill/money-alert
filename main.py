@@ -17,6 +17,11 @@ if '--dev' in sys.argv:
     ####################################
 
     # Test your shit code here!!!
+    stock_tracker = report.stock_tracker.StockTracker()
+    stock_tracker.run()
+
+    gmail = email_handler.GMail()
+    gmail.build_and_send_gmail('TEST EMAIL', None, True)
 
     ####################################
 
@@ -44,14 +49,13 @@ elif '--run-now' in sys.argv:
         init.scheduler.enter(0, 1, stock_tracker.run)
         init.scheduler.run()
 
-        gmail.build_and_send_gmail(init.config['emails'], '24 Hour Reports - Forced Run', None, True)
+        gmail.build_and_send_gmail('24 Hour Reports - Forced Run', None, True)
         stock_tracker.cleanup_charts()
         init.logger.info('Emails Sent')
 
     except Exception as e:
         crash_call_stack = str(e) + '<br/><br/>' + traceback.format_exc()
-        gmail.add_email_content('Application Crash', crash_call_stack)
-        gmail.build_and_send_gmail(init.config['emails'], 'Application Crash')
+        send_error_email
         init.logger.exception(f'Application Crash: {e}')
         quit()
 
@@ -79,14 +83,13 @@ elif '--daily' in sys.argv:
             init.scheduler.enter(run_time, 1, stock_tracker.run)
             init.scheduler.run()
 
-            gmail.build_and_send_gmail(init.config['emails'], '24 Hour Reports', None, True)
+            gmail.build_and_send_gmail('24 Hour Reports', None, True)
             stock_tracker.cleanup_charts()
             init.logger.info('Emails Sent')
 
     except Exception as e:
         crash_call_stack = str(e) + '<br/><br/>' + traceback.format_exc()
-        gmail.add_email_content('Application Crash', crash_call_stack)
-        gmail.build_and_send_gmail(init.config['emails'], 'Application Crash')
+        send_error_email
         init.logger.exception(f'Application Crash: {e}')
         quit()
 
@@ -102,8 +105,7 @@ elif '--watchers' in sys.argv:
 
     except Exception as e:
         crash_call_stack = str(e) + '<br/><br/>' + traceback.format_exc()
-        gmail.add_email_content('Application Crash', crash_call_stack)
-        gmail.build_and_send_gmail(init.config['emails'], 'Application Crash')
+        send_error_email
         init.logger.exception(f'Application Crash: {e}')
         quit()
 
