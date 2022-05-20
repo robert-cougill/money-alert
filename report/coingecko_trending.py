@@ -24,8 +24,8 @@ class Trending(report.base_report.Report):
             self.formatted_response = [(key, value) for key, value in self.trenders.items()]
             self.formatted_response = {key: value for key, value in sorted(self.formatted_response, key=lambda x: x[1]) if value >= init.config['report_settings']['coingecko_trender_appearance_threshold']}
             table = self.build_html_table(['Coin', 'Appearances'], self.formatted_response, 'trending')
-            gmail = email_handler.GMail()
-            gmail.add_email_content('Trending Report', table)
+            email = email_handler.GMail()
+            email.add_report_to_email('Trending Report', table)
 
     def __pull_trenders_and_update_trending_tracker(self):
         last_modify_date = 0

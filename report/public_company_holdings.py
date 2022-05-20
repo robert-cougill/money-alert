@@ -57,5 +57,5 @@ class PublicCompanyHoldings(report.base_report.Report):
     def send_notify_companies(self):
         if len(self.notify_companies) > 0:
             table = self.build_html_table(['Company', 'Coin', 'Change', 'Balance'], self.notify_companies, 'public_company_holdings')
-            gmail = email_handler.GMail()
-            gmail.add_email_content('Public Company Holdings', table)
+            email = email_handler.GMail()
+            email.add_report_to_email('Public Company Holdings', table)

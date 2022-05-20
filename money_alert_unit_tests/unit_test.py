@@ -9,7 +9,7 @@ class UnitTest:
 
     def __init__(self):
         init.logger.debug('Initialize Unit Test')
-        self.gmail = email_handler.GMail()
+        self.email = email_handler.GMail()
         self.report = report.base_report.Report()
 
     def launch_unit_test(self):
@@ -20,7 +20,7 @@ class UnitTest:
         init.scheduler.run()
 
         init.logger.debug('Sending email')
-        self.gmail.build_and_send_gmail(init.config['emails'], 'Money Alert - Unit Test')
+        self.email.send_email('Money Alert - Unit Test')
 
     def __unit_test_health_check(self):
         headers = ['Bittrex', 'Coingecko']
@@ -35,8 +35,8 @@ class UnitTest:
                 'bittrex': self.CONST_API_UP if bittrex_ping_result == 200 else self.CONST_API_DOWN,
                 'coingecko': self.CONST_API_UP if coingecko_ping_result == 200 else self.CONST_API_DOWN
             }, 'unit_tests')
-            self.gmail.add_email_content('Failed Health Check', table)
+            self.email.add_report_to_email('Failed Health Check', table)
             return
 
         table = self.report.build_html_table(headers, {'bittrex': self.CONST_API_UP, 'coingecko': self.CONST_API_UP}, 'unit_tests')
-        self.gmail.add_email_content('Successful Health Check', table)
+        self.email.add_report_to_email('Successful Health Check', table)
