@@ -4,8 +4,8 @@ import report.base_report
 
 
 class UnitTest:
-    CONST_API_DOWN = '<img class="arrow-image-large" src="https://drive.google.com/uc?export=view&id=MONEY_ALERT_ARROW_DOWN" />'
-    CONST_API_UP = '<img class="arrow-image-large" src="https://drive.google.com/uc?export=view&id=MONEY_ALERT_ARROW_UP" />'
+    CONST_API_DOWN = '<img class="arrow-image-large" src="https://drive.google.com/uc?export=view&id={MONEY_ALERT_ARROW_DOWN}" />'.format(MONEY_ALERT_ARROW_DOWN=init.money_alert_arrow_down)
+    CONST_API_UP = '<img class="arrow-image-large" src="https://drive.google.com/uc?export=view&id={MONEY_ALERT_ARROW_UP}" />'.format(MONEY_ALERT_ARROW_UP=init.money_alert_arrow_up)
 
     def __init__(self):
         init.logger.debug('Initialize Unit Test')
