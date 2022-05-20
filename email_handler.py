@@ -37,7 +37,7 @@ class GMail:
         with smtplib.SMTP(self.hostname) as server:
             server.starttls()
             server.login(self.username, self.password)
-            server.sendmail(self.username, init.config['emails'], content)
+            server.sendmail(self.username, init.config['emails'], message.as_string())
 
         init.email_content.clear()
 

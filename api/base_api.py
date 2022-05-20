@@ -36,7 +36,7 @@ class BaseAPI:
         base_url = init.config['clients'][client.value]['base_url']
 
         # region API Rate Limiting
-        rate_limit_in_milliseconds = round((60 / init.config['clients'][client.value]['rate_limit_in_secs']) * 1000)
+        rate_limit_in_milliseconds = round((60 / init.config['clients'][client.value]['requests_per_minute']) * 1000)
         time_now = round(util.timestamp())
         client_wait_period = self.last_api_call_by_client[client] + rate_limit_in_milliseconds
 

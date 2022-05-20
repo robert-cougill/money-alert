@@ -10,25 +10,25 @@
             "base_url": "https://api.bittrex.com/v3",
             "key": "API_BITTREX_KEY",
             "secret": "API_BITTREX_SECRET",
-            "rate_limit_in_secs": 60
+            "requests_per_minute": 60
         },
         "blockchain": {
             "base_url": "https://blockchain.info",
-            "rate_limit_in_secs": 60
+            "requests_per_minute": 60
         },
         "blockchain-v3": {
             "base_url": "https://api.blockchain.com/v3/exchange",
-            "rate_limit_in_secs": 60
+            "requests_per_minute": 60
         },
         "coingecko": {
             "base_url": "https://api.coingecko.com/api/v3",
-            "rate_limit_in_secs": 50
+            "requests_per_minute": 50
         },
         "yahoo-finance": {
             "base_url": "https://yfapi.net",
             "base_url_secondary": "https://alpha.financeapi.net",
             "key": "API_YAHOO_KEY",
-            "rate_limit_in_secs": 60
+            "requests_per_minute": 60
         }
     },
     "report_settings": {
@@ -62,8 +62,9 @@
     "stock_symbols": ["LVOX"],
     "emails": ["PERSONAL_EMAILS"],
     "future_features": [
-        "Refactor the email_handler",
         "Specify when dormant wallets become active for dinosaur footprints - color code row older than 1 year",
-        "Completely new report for gold and silver price tracking"
+        "Add actual unit test suite/framework/project/etc",
+        "Completely new report for gold and silver price tracking",
+        "Split dinosaur footprints, named wallets vs non named wallets"
     ]
 }
