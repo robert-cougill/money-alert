@@ -75,7 +75,7 @@ def build_coin_list():
 
 
 def create_report_data_directory():
-    directory_name = util.configure_file_path('report/report_data')
+    directory_name = util.configure_file_path('report/report_data/charts')
     if not os.path.exists(directory_name):
         os.makedirs(directory_name)
         logger.debug(f'Creating directory: {directory_name}')

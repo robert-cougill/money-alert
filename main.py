@@ -20,8 +20,8 @@ if '--dev' in sys.argv:
     stock_tracker = report.stock_tracker.StockTracker()
     stock_tracker.run()
 
-    gmail = email_handler.GMail()
-    gmail.build_and_send_gmail('TEST EMAIL', None, True)
+    email = email_handler.GMail()
+    email.send_email('TEST EMAIL')
 
     ####################################
 
@@ -32,7 +32,7 @@ elif '--build' in sys.argv:
 
 elif '--run-now' in sys.argv:
     init.logger.info('Running Reports Now!')
-    gmail = email_handler.GMail()
+    email = email_handler.GMail()
 
     try:
         moving_average_report = report.moving_average.MovingAverages()
@@ -49,18 +49,17 @@ elif '--run-now' in sys.argv:
         init.scheduler.enter(0, 1, stock_tracker.run)
         init.scheduler.run()
 
-        gmail.build_and_send_gmail('24 Hour Reports - Forced Run', None, True)
+        email.send_email('24 Hour Reports - Forced Run')
         stock_tracker.cleanup_charts()
         init.logger.info('Emails Sent')
 
     except Exception as e:
-        crash_call_stack = str(e) + '<br/><br/>' + traceback.format_exc()
-        send_error_email
+        email.send_error_email("Application Crash", str(e) + '<br/><br/>' + traceback.format_exc())
         init.logger.exception(f'Application Crash: {e}')
         quit()
 
 elif '--daily' in sys.argv:
-    gmail = email_handler.GMail()
+    email = email_handler.GMail()
 
     try:
         unit_test = money_alert_unit_tests.unit_test.UnitTest()
@@ -83,18 +82,17 @@ elif '--daily' in sys.argv:
             init.scheduler.enter(run_time, 1, stock_tracker.run)
             init.scheduler.run()
 
-            gmail.build_and_send_gmail('24 Hour Reports', None, True)
+            email.send_email('24 Hour Reports')
             stock_tracker.cleanup_charts()
             init.logger.info('Emails Sent')
 
     except Exception as e:
-        crash_call_stack = str(e) + '<br/><br/>' + traceback.format_exc()
-        send_error_email
+        email.send_error_email("Application Crash", str(e) + '<br/><br/>' + traceback.format_exc())
         init.logger.exception(f'Application Crash: {e}')
         quit()
 
 elif '--watchers' in sys.argv:
-    gmail = email_handler.GMail()
+    email = email_handler.GMail()
 
     try:
         init.logger.info('Running supervisor reports')
@@ -104,8 +102,7 @@ elif '--watchers' in sys.argv:
             time.sleep(60)
 
     except Exception as e:
-        crash_call_stack = str(e) + '<br/><br/>' + traceback.format_exc()
-        send_error_email
+        email.send_error_email("Application Crash", str(e) + '<br/><br/>' + traceback.format_exc())
         init.logger.exception(f'Application Crash: {e}')
         quit()
 

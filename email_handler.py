@@ -14,6 +14,10 @@ class GMail:
         self.username = init.config['email']['username']
         self.password = init.config['email']['secret']
 
+    @staticmethod
+    def add_report_to_email(report_name: str, report_content: str):
+        init.email_content.append({'name': report_name, 'contents': report_content})
+
     def send_error_email(self, subject, stacktrace):
         self.add_report_to_email(subject, stacktrace)
         self.send_email(subject)
@@ -36,10 +40,6 @@ class GMail:
             server.sendmail(self.username, init.config['emails'], content)
 
         init.email_content.clear()
-
-    @staticmethod
-    def add_report_to_email(report_name: str, report_content: str):
-        init.email_content.append({'name': report_name, 'contents': report_content})
 
     @staticmethod
     def __get_email_content() -> str:
