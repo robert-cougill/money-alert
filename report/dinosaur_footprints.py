@@ -192,5 +192,5 @@ class DinosaurFootprints(report.base_report.Report):
             return
 
         table = self.build_html_table(['Wallet', 'Balance Change'], self.notify_wallets, 'dinosaur_footprints')
-        gmail = email_handler.GMail()
-        gmail.add_report_to_email('Dinosaur Footprints', table)
+        email = email_handler.GMail()
+        email.add_report_to_email('Dinosaur Footprints', table)

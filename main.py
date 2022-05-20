@@ -17,11 +17,6 @@ if '--dev' in sys.argv:
     ####################################
 
     # Test your shit code here!!!
-    stock_tracker = report.stock_tracker.StockTracker()
-    stock_tracker.run()
-
-    email = email_handler.GMail()
-    email.send_email('TEST EMAIL')
 
     ####################################
 

@@ -37,9 +37,9 @@ class MovingAverages(report.base_report.Report):
         ordered_coins = sorted_coins.keys()
 
         image_body = self.embed_images(util.list_chart_files(self.CONST_CHART_FILE_DIRECTORY), ordered_coins)
-        gmail = email_handler.GMail()
-        gmail.add_report_to_email('Moving Averages', image_body)
-        gmail.send_email('Moving Averages')
+        email = email_handler.GMail()
+        email.add_report_to_email('Moving Averages', image_body)
+        email.send_email('Moving Averages')
 
         util.remove_charts_from_directory(self.CONST_CHART_FILE_DIRECTORY)
 
@@ -65,7 +65,7 @@ class MovingAverages(report.base_report.Report):
                 time_now = datetime.datetime.now()
                 data_list = []
 
-                for day in range(1, 6):
+                for day in range(1, 366):
                     date = time_now - datetime.timedelta(days=day)
                     formatted_date = date.strftime('%d-%m-%Y')
                     response = json.loads(self.coingecko.get_coin_history(coin, formatted_date))
