@@ -36,10 +36,12 @@ def init():
 
 
 def set_environment_variables():
-    global money_alert_arrow_down
-    money_alert_arrow_down = os.getenv('MONEY_ALERT_ARROW_DOWN')
-    global money_alert_arrow_up
-    money_alert_arrow_up = os.getenv('MONEY_ALERT_ARROW_UP')
+    if os.getenv('MONEY_ALERT_ARROW_DOWN') is not None:
+        global money_alert_arrow_down
+        money_alert_arrow_down = os.getenv('MONEY_ALERT_ARROW_DOWN')
+    if os.getenv('MONEY_ALERT_ARROW_UP') is not None:
+        global money_alert_arrow_up
+        money_alert_arrow_up = os.getenv('MONEY_ALERT_ARROW_UP')
     global logger
     logger = logging.getLogger('money-alert')
     if '--dev' in sys.argv or '--run-now' in sys.argv:
