@@ -53,10 +53,10 @@ class GMail:
         email_template = file.read()
         file.close()
 
-        if os.getenv('MONEY_ALERT_LOGO') is None:
-            template = email_template.replace('{{{body_content}}}', report_sections)
-        else:
+        template = email_template.replace('{{{body_content}}}', report_sections)
+        if os.getenv('MONEY_ALERT_LOGO') is not None:
             template = email_template.replace('MONEY_ALERT_LOGO', os.getenv('MONEY_ALERT_LOGO'))
+
         return template
 
     @staticmethod
