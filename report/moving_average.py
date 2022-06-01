@@ -19,12 +19,11 @@ class MovingAverages(report.base_report.Report):
         self.coin_history = dict()
 
     def build_report_data(self):
-        init.logger.info(f'Starting to Build {self.CONST_REPORT_TITLE} Report Data')
+        init.logger.info(f'Moving Average - Starting to Build {self.CONST_REPORT_TITLE} Report Data')
         self.__build_historical_coin_data()
-        init.logger.info(f'Finished Building {self.CONST_REPORT_TITLE} Report Data')
+        init.logger.info(f'Moving Average - Finished Building {self.CONST_REPORT_TITLE} Report Data')
 
     def run(self):
-        init.logger.debug('Running Moving Average Report')
         self.__validate_report_data()
 
         self.charts.build_charts_for_report(self.coin_history)
@@ -42,6 +41,7 @@ class MovingAverages(report.base_report.Report):
         email.send_email('Moving Averages')
 
         util.remove_charts_from_directory(self.CONST_CHART_FILE_DIRECTORY)
+        init.logger.info('Moving Average - Report Ran')
 
     def __validate_report_data(self):
         self.__read_data_from_db()
@@ -61,7 +61,7 @@ class MovingAverages(report.base_report.Report):
     def __build_historical_coin_data(self):
         for coin in init.coin_list.values():
             if not (coin in self.coin_history):
-                init.logger.warning(f'Building data list for {coin}. This will take a few minutes.')
+                init.logger.warning(f'Moving Average - Building data list for {coin}. This will take a few minutes.')
                 time_now = datetime.datetime.now()
                 data_list = []
 
@@ -73,15 +73,15 @@ class MovingAverages(report.base_report.Report):
                     try:
                         data_list.append(response['market_data']['current_price']['usd'])
                     except KeyError:
-                        init.logger.info(f"No market_data for coin {coin} on date {date.strftime('%Y-%m-%d')}")
+                        init.logger.info(f"Moving Average - No market_data for coin {coin} on date {date.strftime('%Y-%m-%d')}")
 
-                init.logger.warning(f'Finished building list for {coin}')
+                init.logger.warning(f'Moving Average - Finished building list for {coin}')
                 self.coin_history[coin] = data_list
 
         self.__write_data_to_db()
 
     def __get_current_price_and_adjust_history(self):
-        init.logger.debug('Moving Average Report: Adjusting History')
+        init.logger.debug('Moving Average - Adjusting History')
         for coin in init.coin_list.values():
             date_now = datetime.datetime.now() - datetime.timedelta(days=1)
             formatted_date = date_now.strftime('%d-%m-%Y')
@@ -94,7 +94,7 @@ class MovingAverages(report.base_report.Report):
         self.__write_data_to_db()
 
     def __write_data_to_db(self):
-        init.logger.info('Moving Average Report: Write Data to DB')
+        init.logger.debug('Moving Average - Write Data to DB')
         con = database_util.DatabaseHelper().create_connection()
 
         insert_list = []
@@ -107,7 +107,7 @@ class MovingAverages(report.base_report.Report):
         con.close()
 
     def __read_data_from_db(self):
-        init.logger.info('Moving Average Report: Read Data From DB')
+        init.logger.debug('Moving Average - Read Data From DB')
         con = database_util.DatabaseHelper().create_connection()
 
         select_statement = 'SELECT coin_id, date_specific_data FROM moving_average_report_data'

@@ -1,6 +1,6 @@
 import email_handler
 import init
-import report.coingecko_trending
+import report.trending
 import report.dinosaur_footprints
 import report.public_company_holdings
 import report.dip_watcher
@@ -31,22 +31,22 @@ elif '--run-now' in sys.argv:
 
     try:
         moving_average_report = report.moving_average.MovingAverages()
-        trending_report = report.coingecko_trending.Trending()
+        trending_report = report.trending.Trending()
         trending_report.email_trenders = True
         public_holdings = report.public_company_holdings.PublicCompanyHoldings()
         dinosaur_report = report.dinosaur_footprints.DinosaurFootprints()
         stock_tracker = report.stock_tracker.StockTracker()
 
         init.scheduler.enter(0, 1, moving_average_report.run)
-        init.scheduler.enter(0, 1, trending_report.run)
-        init.scheduler.enter(0, 1, dinosaur_report.run)
-        init.scheduler.enter(0, 1, public_holdings.run)
-        init.scheduler.enter(0, 1, stock_tracker.run)
+        init.scheduler.enter(1, 1, trending_report.run)
+        init.scheduler.enter(2, 1, dinosaur_report.run)
+        init.scheduler.enter(3, 1, public_holdings.run)
+        init.scheduler.enter(4, 1, stock_tracker.run)
         init.scheduler.run()
 
         email.send_email('24 Hour Reports - Forced Run')
         stock_tracker.cleanup_charts()
-        init.logger.info('Emails Sent')
+        init.logger.info('Scheduler - Complete')
 
     except Exception as e:
         email.send_error_email("Application Crash", str(e) + '<br/><br/>' + traceback.format_exc())
@@ -61,25 +61,25 @@ elif '--daily' in sys.argv:
         unit_test.launch_unit_test()
 
         moving_average_report = report.moving_average.MovingAverages()
-        trending_report = report.coingecko_trending.Trending()
+        trending_report = report.trending.Trending()
         public_holdings = report.public_company_holdings.PublicCompanyHoldings()
         dinosaur_report = report.dinosaur_footprints.DinosaurFootprints()
         stock_tracker = report.stock_tracker.StockTracker()
 
         while True:
-            run_time = util.get_report_run_time(init.config['report_settings']['run_time'])
-            init.logger.info(f'Time Left: {run_time} seconds')
+            run_time = util.get_report_run_time(init.config['report_settings']['daily_report_run_time'])
+            init.logger.info(f'Scheduler - Time Left: {run_time} seconds')
 
             init.scheduler.enter(run_time, 1, moving_average_report.run)
-            init.scheduler.enter(run_time, 1, trending_report.run)
-            init.scheduler.enter(run_time, 1, dinosaur_report.run)
-            init.scheduler.enter(run_time, 1, public_holdings.run)
-            init.scheduler.enter(run_time, 1, stock_tracker.run)
+            init.scheduler.enter(run_time+1, 1, trending_report.run)
+            init.scheduler.enter(run_time+2, 1, dinosaur_report.run)
+            init.scheduler.enter(run_time+3, 1, public_holdings.run)
+            init.scheduler.enter(run_time+4, 1, stock_tracker.run)
             init.scheduler.run()
 
             email.send_email('24 Hour Reports')
             stock_tracker.cleanup_charts()
-            init.logger.info('Emails Sent')
+            init.logger.info('Scheduler - Complete')
 
     except Exception as e:
         email.send_error_email("Application Crash", str(e) + '<br/><br/>' + traceback.format_exc())

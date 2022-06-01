@@ -4,6 +4,7 @@ import api.coingecko
 import api.yahoofinance
 import init
 import json
+import random
 import typing
 
 
@@ -35,6 +36,12 @@ class Report:
 
         body += '</body>'
         return body
+
+    def build_no_data_result(self) -> str:
+        uuid = random.choice(init.config['no_data_images'])
+        image = '<img class="no-data-image" src="https://drive.google.com/uc?export=view&id=RANDOM" />'
+        image = image.replace("RANDOM", uuid)
+        return image
 
     def build_html_table(self, headers: typing.List, body: typing.Dict, report_name=None) -> str:
         table = '<table class="styled-table"><thead><tr>'

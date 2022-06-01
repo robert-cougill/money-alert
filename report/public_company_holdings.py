@@ -11,7 +11,6 @@ class PublicCompanyHoldings(report.base_report.Report):
         self.notify_companies = dict()
 
     def run(self):
-        init.logger.debug('Running public company holdings report')
         self.get_holdings_by_coin('bitcoin')
         self.get_holdings_by_coin('ethereum')
         self.send_notify_companies()
@@ -55,7 +54,10 @@ class PublicCompanyHoldings(report.base_report.Report):
         con.close()
 
     def send_notify_companies(self):
+        init.logger.info(f'Public Company Holdings - Companies Holdings Changed: {len(self.notify_companies)}')
+        email = email_handler.GMail()
         if len(self.notify_companies) > 0:
             table = self.build_html_table(['Company', 'Coin', 'Change', 'Balance'], self.notify_companies, 'public_company_holdings')
-            email = email_handler.GMail()
             email.add_report_to_email('Public Company Holdings', table)
+
+        email.add_report_to_email('Public Company Holdings', self.build_no_data_result())
