@@ -12,8 +12,6 @@ global coin_list
 global config
 global email_content
 global logger
-global money_alert_arrow_down
-global money_alert_arrow_up
 global project_directory
 global scheduler
 
@@ -36,12 +34,6 @@ def init():
 
 
 def set_environment_variables():
-    if os.getenv('MONEY_ALERT_ARROW_DOWN') is not None:
-        global money_alert_arrow_down
-        money_alert_arrow_down = os.getenv('MONEY_ALERT_ARROW_DOWN')
-    if os.getenv('MONEY_ALERT_ARROW_UP') is not None:
-        global money_alert_arrow_up
-        money_alert_arrow_up = os.getenv('MONEY_ALERT_ARROW_UP')
     global logger
     logger = logging.getLogger('money-alert')
     if '--dev' in sys.argv or '--run-now' in sys.argv:

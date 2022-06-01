@@ -1,19 +1,16 @@
 import ast
 import bs4
 import collections
-import database_util
-import email_handler
-import init
-import report.base_report
+from src import init, email_handler, database_util, util
+import src.report.base_report
 import requests
 import socket
 import urllib3
-import util
 
 
-class DinosaurFootprints(report.base_report.Report):
+class DinosaurFootprints(src.report.base_report.Report):
     def __init__(self):
-        report.base_report.Report.__init__(self)
+        src.report.base_report.Report.__init__(self)
         self.wallets = []
         self.top_wallets = []
         self.insertion_wallet_addresses = []
@@ -43,7 +40,8 @@ class DinosaurFootprints(report.base_report.Report):
         db_wallet_addresses = []
 
         for url_ending in bitinfo_urls:
-            response = requests.get('https://bitinfocharts.com/top-100-richest-bitcoin-addresses' + url_ending + '.html')
+            response = requests.get(
+                'https://bitinfocharts.com/top-100-richest-bitcoin-addresses' + url_ending + '.html')
             soup = bs4.BeautifulSoup(response.text, 'html.parser')
             small_tags = soup.find_all('small')
 
@@ -66,7 +64,9 @@ class DinosaurFootprints(report.base_report.Report):
                     for address_link in link.find_all('a', href=True):
                         exchange_wallet_addresses[named_link.split('/')[-1]] += [address_link.get_text()]
                         all_bitinfocharts_addresses.append(address_link.get_text())
-            except (ValueError, urllib3.exceptions.InvalidChunkLength, urllib3.exceptions.ProtocolError, requests.exceptions.ChunkedEncodingError, urllib3.exceptions.ReadTimeoutError, socket.timeout, requests.exceptions.ConnectionError):
+            except (ValueError, urllib3.exceptions.InvalidChunkLength, urllib3.exceptions.ProtocolError,
+                    requests.exceptions.ChunkedEncodingError, urllib3.exceptions.ReadTimeoutError, socket.timeout,
+                    requests.exceptions.ConnectionError):
                 init.logger.debug(f'{named_link} failed to load properly.')
 
         con = database_util.DatabaseHelper().create_connection()
@@ -91,7 +91,9 @@ class DinosaurFootprints(report.base_report.Report):
                 elif name.isnumeric() is False:
                     self.insertion_wallet_addresses.append((value, 1, name))
 
-        con.cursor().executemany('INSERT INTO top_bitcoin_wallet_report_data (wallet_address, exchange_wallet, exchange_name) VALUES(?, ?, ?) ON CONFLICT (wallet_address) DO UPDATE SET (wallet_address, exchange_wallet, exchange_name) = (excluded.wallet_address, excluded.exchange_wallet, excluded.exchange_name)', self.insertion_wallet_addresses)
+        con.cursor().executemany(
+            'INSERT INTO top_bitcoin_wallet_report_data (wallet_address, exchange_wallet, exchange_name) VALUES(?, ?, ?) ON CONFLICT (wallet_address) DO UPDATE SET (wallet_address, exchange_wallet, exchange_name) = (excluded.wallet_address, excluded.exchange_wallet, excluded.exchange_name)',
+            self.insertion_wallet_addresses)
         con.commit()
         con.close()
 
@@ -137,14 +139,16 @@ class DinosaurFootprints(report.base_report.Report):
                 insert_list.append(tuple([wallet]))
                 init.logger.debug(f'Inserting {wallet} into top_bitcoin_wallet_report_data')
 
-        con.cursor().executemany('INSERT INTO top_bitcoin_wallet_report_data (wallet_address) VALUES(?) ON CONFLICT DO NOTHING', insert_list)
+        con.cursor().executemany(
+            'INSERT INTO top_bitcoin_wallet_report_data (wallet_address) VALUES(?) ON CONFLICT DO NOTHING', insert_list)
         con.commit()
         con.close()
 
     def __get_wallet_information(self):
         init.logger.debug('Dinosaur Footprints: get wallet information')
         con = database_util.DatabaseHelper().create_connection()
-        db_wallets = con.cursor().execute('SELECT * FROM top_bitcoin_wallet_report_data WHERE exchange_wallet = 0 ORDER BY balance DESC').fetchall()
+        db_wallets = con.cursor().execute(
+            'SELECT * FROM top_bitcoin_wallet_report_data WHERE exchange_wallet = 0 ORDER BY balance DESC').fetchall()
 
         db_wallet_list = dict()
         for wallet in db_wallets:
@@ -183,7 +187,8 @@ class DinosaurFootprints(report.base_report.Report):
         if db_wallet['balance'] != blockchain_wallet['final_balance']:
             balance_diff = util.convert_satoshis_to_btc(blockchain_wallet['final_balance'] - db_wallet['balance'])
 
-            if balance_diff > init.config['report_settings']['btc_threshold'] or balance_diff < -init.config['report_settings']['btc_threshold']:
+            if balance_diff > init.config['report_settings']['btc_threshold'] or balance_diff < - \
+                    init.config['report_settings']['btc_threshold']:
                 self.notify_wallets[wallet_address] = balance_diff
 
     def __attach_table_to_email(self):

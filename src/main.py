@@ -7,7 +7,7 @@ import report.dip_watcher
 import report.moving_average
 import report.stock_tracker
 import sys
-import money_alert_unit_tests.unit_test
+import unit_tests.test_email_handler
 import time
 import traceback
 import util
@@ -57,7 +57,7 @@ elif '--daily' in sys.argv:
     email = email_handler.GMail()
 
     try:
-        unit_test = money_alert_unit_tests.unit_test.UnitTest()
+        unit_test = unit_tests.test_email_handler.UnitTest()
         unit_test.launch_unit_test()
 
         moving_average_report = report.moving_average.MovingAverages()

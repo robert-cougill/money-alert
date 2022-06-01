@@ -129,7 +129,7 @@ dmypy.json
 .pyre/
 
 # report_data
-report/report_data
+src/report/report_data
 
 # PyCharm
 .idea/

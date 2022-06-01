@@ -1,18 +1,18 @@
-import api.bittrex
-import api.blockchain
-import api.coingecko
-import api.yahoofinance
-import init
+import src.api.bittrex
+import src.api.blockchain
+import src.api.coingecko
+import src.api.yahoofinance
+from src import init
 import json
 import typing
 
 
 class Report:
     def __init__(self):
-        self.bittrex = api.bittrex.Bittrex()
-        self.blockchain = api.blockchain.Blockchain()
-        self.coingecko = api.coingecko.Coingecko()
-        self.yahoofinance = api.yahoofinance.YahooFinance()
+        self.bittrex = src.api.bittrex.Bittrex()
+        self.blockchain = src.api.blockchain.Blockchain()
+        self.coingecko = src.api.coingecko.Coingecko()
+        self.yahoofinance = src.api.yahoofinance.YahooFinance()
 
     def get_current_price_of_all_coins(self) -> typing.Dict:
         current_coin_price = dict()
@@ -24,7 +24,8 @@ class Report:
 
         return current_coin_price
 
-    def embed_images(self, file_names, ordered_coins) -> str:
+    @staticmethod
+    def embed_images(file_names, ordered_coins) -> str:
         body = '<body>'
 
         for coins in ordered_coins:
@@ -36,7 +37,8 @@ class Report:
         body += '</body>'
         return body
 
-    def build_html_table(self, headers: typing.List, body: typing.Dict, report_name=None) -> str:
+    @staticmethod
+    def build_html_table(headers: typing.List, body: typing.Dict, report_name=None) -> str:
         table = '<table class="styled-table"><thead><tr>'
         for header in headers:
             table += '<th>' + header + '</th>'

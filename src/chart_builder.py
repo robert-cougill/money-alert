@@ -1,8 +1,6 @@
-import logging
 import matplotlib.pyplot as plt
 import matplotlib.offsetbox as box
 import numpy
-import os
 import util
 
 
@@ -34,7 +32,6 @@ class ChartBuilder:
             ax.set(title=asset_name.replace('-', ' ').title(), xlabel='Days', ylabel='Price (USD)')
         else:
             ax.set(title=asset_name, xlabel='Days', ylabel='Price (USD)')
-
 
         # Plot list, min, and max values
         ax.plot(x, historic_data, linestyle='-', color='#179de2')

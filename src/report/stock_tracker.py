@@ -1,16 +1,13 @@
-import email_handler
-import chart_builder
-import init
+from src import chart_builder, init, email_handler, util
 import json
-import report.base_report
-import util
+import src.report.base_report
 
 
-class StockTracker(report.base_report.Report):
+class StockTracker(src.report.base_report.Report):
     CONST_CHART_FILE_DIRECTORY = util.configure_file_path('report/report_data/charts/')
 
     def __init__(self):
-        report.base_report.Report.__init__(self)
+        src.report.base_report.Report.__init__(self)
         self.charts = chart_builder.ChartBuilder()
         self.stock_history = dict()
 

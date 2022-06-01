@@ -1,20 +1,16 @@
-import chart_builder
-import database_util
+from src import chart_builder, init, email_handler, database_util, util
 import datetime
-import email_handler
-import init
 import json
-import report.base_report
-import util
+import src.report.base_report
 
 
-class MovingAverages(report.base_report.Report):
+class MovingAverages(src.report.base_report.Report):
     CONST_REPORT = 'moving_average'
     CONST_REPORT_TITLE = 'Moving Average'
     CONST_CHART_FILE_DIRECTORY = util.configure_file_path('report/report_data/charts/')
 
     def __init__(self):
-        report.base_report.Report.__init__(self)
+        src.report.base_report.Report.__init__(self)
         self.charts = chart_builder.ChartBuilder()
         self.coin_history = dict()
 

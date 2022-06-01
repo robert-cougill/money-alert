@@ -1,16 +1,16 @@
-import email_handler
-import init
-import report.base_report
+from src import init, email_handler
+import os
+import src.report.base_report
 
 
 class UnitTest:
-    CONST_API_DOWN = '<img class="arrow-image-large" src="https://drive.google.com/uc?export=view&id={MONEY_ALERT_ARROW_DOWN}" />'.format(MONEY_ALERT_ARROW_DOWN=init.money_alert_arrow_down)
-    CONST_API_UP = '<img class="arrow-image-large" src="https://drive.google.com/uc?export=view&id={MONEY_ALERT_ARROW_UP}" />'.format(MONEY_ALERT_ARROW_UP=init.money_alert_arrow_up)
+    CONST_API_DOWN = '<img class="arrow-image-large" src="https://drive.google.com/uc?export=view&id={MONEY_ALERT_ARROW_DOWN}" />'.format(MONEY_ALERT_ARROW_DOWN=os.getenv('MONEY_ALERT_ARROW_DOWN') if os.getenv('MONEY_ALERT_ARROW_DOWN') is not None else "")
+    CONST_API_UP = '<img class="arrow-image-large" src="https://drive.google.com/uc?export=view&id={MONEY_ALERT_ARROW_UP}" />'.format(MONEY_ALERT_ARROW_UP=os.getenv('MONEY_ALERT_ARROW_UP') if os.getenv('MONEY_ALERT_ARROW_UP') is not None else "")
 
     def __init__(self):
         init.logger.debug('Initialize Unit Test')
         self.email = email_handler.GMail()
-        self.report = report.base_report.Report()
+        self.report = src.report.base_report.Report()
 
     def launch_unit_test(self):
         init.logger.debug('Enter item to scheduler')

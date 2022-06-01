@@ -1,13 +1,11 @@
-import database_util
-import email_handler
-import init
+from src import init, email_handler, database_util
 import json
-import report.base_report
+import src.report.base_report
 
 
-class PublicCompanyHoldings(report.base_report.Report):
+class PublicCompanyHoldings(src.report.base_report.Report):
     def __init__(self):
-        report.base_report.Report.__init__(self)
+        src.report.base_report.Report.__init__(self)
         self.notify_companies = dict()
 
     def run(self):

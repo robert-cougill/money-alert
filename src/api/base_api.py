@@ -1,10 +1,8 @@
-import enums
-import init
+from src import init, enums, util
 import json
 import requests
 import time
 import typing
-import util
 
 
 class BaseAPI:

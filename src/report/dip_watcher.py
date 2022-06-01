@@ -1,13 +1,12 @@
-import email_handler
-import init
+from src import init, email_handler
 import json
-import report.base_report
+import src.report.base_report
 import time
 
 
-class DipWatcher(report.base_report.Report):
+class DipWatcher(src.report.base_report.Report):
     def __init__(self):
-        report.base_report.Report.__init__(self)
+        src.report.base_report.Report.__init__(self)
         self.price_dict = dict()
         self.price_dict['bitcoin'] = list()
         self.last_email_sent = time.time()

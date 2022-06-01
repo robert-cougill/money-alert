@@ -1,18 +1,16 @@
-import database_util
-import email_handler
-import init
+from src import init, email_handler, database_util
 import json
-import report.base_report
+import src.report.base_report
 import time
 
 
-class Trending(report.base_report.Report):
+class Trending(src.report.base_report.Report):
     CONST_DAY_IN_SECONDS = 60 * 60 * 24
     CONST_FIVE_MINUTES_IN_SECONDS = 60 * 5
     CONST_DATA_INTEGRITY_THRESHOLD = 60 * 60 * 25
 
     def __init__(self):
-        report.base_report.Report.__init__(self)
+        src.report.base_report.Report.__init__(self)
         self.formatted_response = None
         self.trenders = dict()
         self.email_trenders = False
