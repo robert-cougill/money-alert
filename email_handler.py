@@ -15,7 +15,7 @@ class GMail:
         self.password = init.config['email']['secret']
 
     @staticmethod
-    def add_report_to_email(report_name: str, report_content: str):
+    def add_report_to_email(report_name: str, report_content: str = None):
         init.email_content.append({'name': report_name, 'contents': report_content})
 
     def send_error_email(self, subject, stacktrace):

@@ -18,14 +18,19 @@ class Trending(report.base_report.Report):
         self.email_trenders = False
 
     def run(self):
-        init.logger.info('Running CoinGecko Trending Report')
         self.__pull_trenders_and_update_trending_tracker()
+        email = email_handler.GMail()
+        wallets = dict((k, v) for k, v in self.trenders.items() if v >= 5)
+        init.logger.info(f'Trending Report - Wallets Found: {len(wallets.keys())}')
+
         if self.email_trenders:
             self.formatted_response = [(key, value) for key, value in self.trenders.items()]
-            self.formatted_response = {key: value for key, value in sorted(self.formatted_response, key=lambda x: x[1]) if value >= init.config['report_settings']['coingecko_trender_appearance_threshold']}
+            self.formatted_response = {key: value for key, value in sorted(self.formatted_response, key=lambda x: x[1]) if value >= init.config['report_settings']['trending_report_appearance_threshold']}
             table = self.build_html_table(['Coin', 'Appearances'], self.formatted_response, 'trending')
-            email = email_handler.GMail()
             email.add_report_to_email('Trending Report', table)
+            return
+
+        email.add_report_to_email('Trending Report', self.build_no_data_result())
 
     def __pull_trenders_and_update_trending_tracker(self):
         last_modify_date = 0
@@ -41,7 +46,7 @@ class Trending(report.base_report.Report):
         if (time.time() - last_modify_date) > self.CONST_DATA_INTEGRITY_THRESHOLD:
             self.trenders = dict()
         elif (time.time() - last_modify_date) < (self.CONST_DAY_IN_SECONDS - self.CONST_FIVE_MINUTES_IN_SECONDS):
-            init.logger.info('Less than a day has passed since the last Trending report run')
+            init.logger.info('Trending Report - Less than a day has passed since the last Trending report run')
             return
 
         search_trending = json.loads(bytes.decode(self.coingecko.get_trending()))
@@ -77,11 +82,11 @@ class Trending(report.base_report.Report):
         con.cursor().executemany('DELETE FROM trending_report_data WHERE coingecko_id=?', delete_list)
         con.commit()
         con.close()
-        init.logger.debug(f'trending_report_data Table Contents {insert_list}')
+        init.logger.debug(f'Trending Report - trending_report_data Table Contents {insert_list}')
 
     def __check_trenders_email_threshold(self):
         for appearance in self.trenders.values():
-            if appearance >= init.config['report_settings']['coingecko_trender_appearance_threshold']:
+            if appearance >= init.config['report_settings']['trending_report_appearance_threshold']:
                 self.email_trenders = True
                 return
             else:

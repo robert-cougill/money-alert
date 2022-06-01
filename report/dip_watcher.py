@@ -47,9 +47,9 @@ class DipWatcher(report.base_report.Report):
             twelve_hour_percent_change = (self.price_dict['bitcoin'][0] - self.price_dict['bitcoin'][719]) / self.price_dict['bitcoin'][719] * 100
             self.price_dict['bitcoin'].pop()
 
-        init.logger.info(f'Price: {self.price_dict["bitcoin"][0]} | 1: {one_hour_percent_change} | 2: {two_hour_percent_change} | 4: {four_hour_percent_change} | 8: {eight_hour_percent_change} | 12: {twelve_hour_percent_change}')
+        init.logger.info(f'Dip Watcher - BTC Price: {self.price_dict["bitcoin"][0]} | 1: {one_hour_percent_change} | 2: {two_hour_percent_change} | 4: {four_hour_percent_change} | 8: {eight_hour_percent_change} | 12: {twelve_hour_percent_change}')
 
-        watcher_threshold = init.config['report_settings']['watcher_threshold']
+        watcher_threshold = init.config['report_settings']['dip_watcher_percentage_threshold']
         if (one_hour_percent_change <= watcher_threshold
                 or two_hour_percent_change <= watcher_threshold
                 or four_hour_percent_change <= watcher_threshold

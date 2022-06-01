@@ -20,7 +20,6 @@ class DinosaurFootprints(report.base_report.Report):
         self.notify_wallets = dict()
 
     def run(self):
-        init.logger.debug('Running dinosaur footprints report')
         self.__scrape_website('https://btc.com/stats/rich-list', 'table')
         self.__scrape_website('https://99bitcoins.com/bitcoin-rich-list-top500/', 't99btc-rich-list')
         self.__scrape_website('https://99bitcoins.com/bitcoin-rich-list-top1000/', 't99btc-rich-list')
@@ -67,7 +66,7 @@ class DinosaurFootprints(report.base_report.Report):
                         exchange_wallet_addresses[named_link.split('/')[-1]] += [address_link.get_text()]
                         all_bitinfocharts_addresses.append(address_link.get_text())
             except (ValueError, urllib3.exceptions.InvalidChunkLength, urllib3.exceptions.ProtocolError, requests.exceptions.ChunkedEncodingError, urllib3.exceptions.ReadTimeoutError, socket.timeout, requests.exceptions.ConnectionError):
-                init.logger.debug(f'{named_link} failed to load properly.')
+                init.logger.debug(f'Dinosaur Footprints - {named_link} failed to load properly.')
 
         con = database_util.DatabaseHelper().create_connection()
         rows = con.cursor().execute('SELECT DISTINCT wallet_address FROM top_bitcoin_wallet_report_data').fetchall()
@@ -96,7 +95,7 @@ class DinosaurFootprints(report.base_report.Report):
         con.close()
 
     def __scrape_website(self, url, table_class_name):
-        init.logger.debug(f'Dinosaur Footprints: Scraping {url}')
+        init.logger.debug(f'Dinosaur Footprints - Scraping {url}')
         response = requests.get(url)
         soup = bs4.BeautifulSoup(response.text, 'html.parser')
 
@@ -106,7 +105,7 @@ class DinosaurFootprints(report.base_report.Report):
 
     @staticmethod
     def __extract_wallet_addresses(tables, wallets):
-        init.logger.debug('Dinosaur Footprints: extract wallet addresses')
+        init.logger.debug('Dinosaur Footprints - Extract Wallet Addresses')
         rows = []
         for table_index in range(len(tables)):
             rows.extend(tables[table_index].find_all('tr'))
@@ -124,7 +123,7 @@ class DinosaurFootprints(report.base_report.Report):
                 wallets.append(values[0])
 
     def __add_new_wallet_addresses(self):
-        init.logger.debug('Dinosaur Footprints: Adding new wallet addresses')
+        init.logger.debug('Dinosaur Footprints - Adding new wallet addresses')
         con = database_util.DatabaseHelper().create_connection()
         rows = con.cursor().execute('SELECT DISTINCT wallet_address FROM top_bitcoin_wallet_report_data').fetchall()
         if len(rows) != 0:
@@ -135,14 +134,14 @@ class DinosaurFootprints(report.base_report.Report):
         for wallet in self.wallets:
             if wallet not in self.top_wallets:
                 insert_list.append(tuple([wallet]))
-                init.logger.debug(f'Inserting {wallet} into top_bitcoin_wallet_report_data')
+                init.logger.debug(f'Dinosaur Footprints - Inserting {wallet} into top_bitcoin_wallet_report_data')
 
         con.cursor().executemany('INSERT INTO top_bitcoin_wallet_report_data (wallet_address) VALUES(?) ON CONFLICT DO NOTHING', insert_list)
         con.commit()
         con.close()
 
     def __get_wallet_information(self):
-        init.logger.debug('Dinosaur Footprints: get wallet information')
+        init.logger.debug('Dinosaur Footprints - Get Wallet Information')
         con = database_util.DatabaseHelper().create_connection()
         db_wallets = con.cursor().execute('SELECT * FROM top_bitcoin_wallet_report_data WHERE exchange_wallet = 0 ORDER BY balance DESC').fetchall()
 
@@ -183,14 +182,16 @@ class DinosaurFootprints(report.base_report.Report):
         if db_wallet['balance'] != blockchain_wallet['final_balance']:
             balance_diff = util.convert_satoshis_to_btc(blockchain_wallet['final_balance'] - db_wallet['balance'])
 
-            if balance_diff > init.config['report_settings']['btc_threshold'] or balance_diff < -init.config['report_settings']['btc_threshold']:
+            if balance_diff > init.config['report_settings']['dinosaur_footprints_btc_transaction_threshold'] or balance_diff < -init.config['report_settings']['dinosaur_footprints_btc_transaction_threshold']:
                 self.notify_wallets[wallet_address] = balance_diff
 
     def __attach_table_to_email(self):
-        init.logger.info(f'Dinosaur Footprints: Notification Wallets {len(self.notify_wallets)}')
+        init.logger.info(f'Dinosaur Footprints - Wallets Found: {len(self.notify_wallets)}')
+        email = email_handler.GMail()
+
         if len(self.notify_wallets) == 0:
+            email.add_report_to_email('Dinosaur Footprints', self.build_no_data_result())
             return
 
         table = self.build_html_table(['Wallet', 'Balance Change'], self.notify_wallets, 'dinosaur_footprints')
-        email = email_handler.GMail()
         email.add_report_to_email('Dinosaur Footprints', table)

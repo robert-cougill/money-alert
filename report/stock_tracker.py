@@ -15,6 +15,7 @@ class StockTracker(report.base_report.Report):
         self.stock_history = dict()
 
     def run(self):
+        init.logger.info(f'Stock Tracker - Stock Symbols: {init.config["stock_symbols"]}')
         for symbol in init.config['stock_symbols']:
             historical_data = json.loads(self.yahoofinance.get_historical_data(symbol))
             closing_values = []
