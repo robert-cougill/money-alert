@@ -37,6 +37,8 @@ elif '--run-now' in sys.argv:
         dinosaur_report = report.dinosaur_footprints.DinosaurFootprints()
         stock_tracker = report.stock_tracker.StockTracker()
 
+        init.logger.info('Scheduler - Start')
+
         init.scheduler.enter(0, 1, moving_average_report.run)
         init.scheduler.enter(0, 1, trending_report.run)
         init.scheduler.enter(0, 1, dinosaur_report.run)
