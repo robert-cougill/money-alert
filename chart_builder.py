@@ -1,8 +1,6 @@
-import logging
 import matplotlib.pyplot as plt
 import matplotlib.offsetbox as box
 import numpy
-import os
 import util
 
 
@@ -61,3 +59,4 @@ class ChartBuilder:
                 arrowprops=dict(arrowstyle='-', color='gray')))
 
         plt.savefig(self.CONST_CHART_FILE_DIRECTORY + asset_name + '.png')
+        plt.close(fig)
