@@ -24,11 +24,11 @@
             "base_url": "https://api.coingecko.com/api/v3",
             "requests_per_minute": 45
         },
-        "yahoo-finance": {
-            "base_url": "https://yfapi.net",
-            "base_url_secondary": "https://alpha.financeapi.net",
-            "key": "API_YAHOO_KEY",
-            "requests_per_minute": 60
+        "alpha-vantage": {
+            "base_url": "https://alpha-vantage.p.rapidapi.com",
+            "host": "alpha-vantage.p.rapidapi.com",
+            "key": "API_ALPHA_VANTAGE_KEY",
+            "requests_per_minute": 5
         }
     },
     "report_settings": {
