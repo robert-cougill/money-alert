@@ -52,8 +52,8 @@ jobs:
           MONEY_ALERT_ARROW_DOWN: ${{ secrets.MONEY_ALERT_ARROW_DOWN }}
         run: |
           sudo sed -i "s/MONEY_ALERT_LOGO/$MONEY_ALERT_LOGO/g" /opt/money-alert/email_template.html
-          sudo sed -i "s/{MONEY_ALERT_ARROW_UP}/$MONEY_ALERT_ARROW_UP/g" /opt/money-alert/tests/unit_test.py
-          sudo sed -i "s/{MONEY_ALERT_ARROW_DOWN}/$MONEY_ALERT_ARROW_DOWN/g" /opt/money-alert/tests/unit_test.py
+          sudo sed -i "s/{MONEY_ALERT_ARROW_UP}/$MONEY_ALERT_ARROW_UP/g" /opt/money-alert/money_alert_unit_tests/unit_test.py
+          sudo sed -i "s/{MONEY_ALERT_ARROW_DOWN}/$MONEY_ALERT_ARROW_DOWN/g" /opt/money-alert/money_alert_unit_tests/unit_test.py
   restart_linux_service:
     needs: [set_api_and_email_variables, set_images_variables]
     runs-on: self-hosted
