@@ -49,7 +49,15 @@ class Trending(report.base_report.Report):
             init.logger.info('Trending Report - Less than a day has passed since the last Trending report run')
             return
 
-        search_trending = json.loads(bytes.decode(self.coingecko.get_trending()))
+        for i in range(1, 6):
+            if i != 1:
+                time.sleep(60)
+            trending_result = self.coingecko.get_trending()
+            if trending_result is not None:
+                search_trending = json.loads(bytes.decode(trending_result))
+                break
+            if i == 5:
+                search_trending = {"coins": [{"item": {"id": "placeholderdata"}}]}
 
         trending_ids = list()
         for item in search_trending['coins']:
