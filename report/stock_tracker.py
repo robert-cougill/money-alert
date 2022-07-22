@@ -17,17 +17,16 @@ class StockTracker(report.base_report.Report):
     def run(self):
         init.logger.info(f'Stock Tracker - Stock Symbols: {init.config["stock_symbols"]}')
         for symbol in init.config['stock_symbols']:
-            historical_data = json.loads(self.yahoofinance.get_historical_data(symbol))
+            historical_data = json.loads(self.alphavantage.get_historical_data(symbol))
             closing_values = []
 
-            if 'attributes' not in historical_data:
+            if 'Time Series (Daily)' not in historical_data:
                 return
 
-            history = historical_data['attributes']
-            for key in sorted(history.keys()):
-                closing_values.append(history[key]['close'])
+            history = historical_data['Time Series (Daily)']
+            for key in history.keys():
+                closing_values.append(float(history[key]['4. close']))
 
-            closing_values.reverse()
             self.stock_history[symbol] = closing_values
 
         self.charts.build_charts_for_report(self.stock_history, False)
