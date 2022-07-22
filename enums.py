@@ -25,9 +25,3 @@ class DataInterval(enum.Enum):
     MINUTELY = 'minutely'
     HOURLY = 'hourly'
     DAILY = 'daily'
-
-
-class TimePeriodAlphaVantage(enum.Enum):
-    DAILY = 'TIME_SERIES_DAILY'
-    WEEKLY = 'TIME_SERIES_WEEKLY'
-    MONTHLY = 'TIME_SERIES_MONTHLY'
