@@ -17,7 +17,8 @@ class DinosaurFootprints(report.base_report.Report):
         self.wallets = []
         self.top_wallets = []
         self.insertion_wallet_addresses = []
-        self.notify_wallets = dict()
+        self.notify_nonexchange = dict()
+        self.notify_exchange = dict()
 
     def run(self):
         self.__scrape_website('https://btc.com/stats/rich-list', 'table')
@@ -143,17 +144,17 @@ class DinosaurFootprints(report.base_report.Report):
     def __get_wallet_information(self):
         init.logger.debug('Dinosaur Footprints - Get Wallet Information')
         con = database_util.DatabaseHelper().create_connection()
-        db_wallets = con.cursor().execute('SELECT * FROM top_bitcoin_wallet_report_data WHERE exchange_wallet = 0 ORDER BY balance DESC').fetchall()
+        db_wallets = con.cursor().execute('SELECT * FROM top_bitcoin_wallet_report_data ORDER BY balance DESC').fetchall()
 
-        db_wallet_list = dict()
+        db_wallet_dict = dict()
         for wallet in db_wallets:
-            db_wallet_list[wallet[0]] = {'balance': wallet[1]}
+            db_wallet_dict[wallet[0]] = {'balance': wallet[1], 'exchange_wallet': wallet[3]}
 
         # Pull wallet data from blockchain API
         blockchain_wallet_data = dict()
         wallet_list = []
 
-        for wallet in db_wallet_list:
+        for wallet in db_wallet_dict:
             wallet_list.append(wallet)
             if len(wallet_list) % 50 == 0:
                 wallet_data_in_bytes = self.blockchain.get_address_balances(wallet_list)
@@ -168,30 +169,46 @@ class DinosaurFootprints(report.base_report.Report):
 
         for wallet_address, wallet_data in blockchain_wallet_data.items():
             # If DB is missing balance or total_received, add to DB and continue
-            if db_wallet_list[wallet_address]['balance'] is not None:
-                self.__compare_wallet_information(db_wallet_list[wallet_address], wallet_data, wallet_address)
+            if db_wallet_dict[wallet_address]['balance'] is not None:
+                self.__compare_wallet_information(db_wallet_dict[wallet_address], wallet_data, wallet_address)
 
             update_statement = 'UPDATE top_bitcoin_wallet_report_data SET balance = ? WHERE wallet_address = ?'
             con.cursor().execute(update_statement, tuple([wallet_data['final_balance'], wallet_address]))
-            con.commit()
 
-        if len(self.notify_wallets) > 0:
-            self.notify_wallets = dict(sorted(self.notify_wallets.items(), key=lambda item: item[1]))
+        con.commit()
+        if len(self.notify_nonexchange) > 0:
+            self.notify_nonexchange = self.__sort_dictionary(self.notify_nonexchange)
+
+        if len(self.notify_exchange) > 0:
+            self.notify_exchange = self.__sort_dictionary(self.notify_exchange)
+
+    @staticmethod
+    def __sort_dictionary(dictionary):
+        return dict(sorted(dictionary.items(), key=lambda item: item[1]))
 
     def __compare_wallet_information(self, db_wallet, blockchain_wallet, wallet_address):
         if db_wallet['balance'] != blockchain_wallet['final_balance']:
             balance_diff = util.convert_satoshis_to_btc(blockchain_wallet['final_balance'] - db_wallet['balance'])
 
             if balance_diff > init.config['report_settings']['dinosaur_footprints_btc_transaction_threshold'] or balance_diff < -init.config['report_settings']['dinosaur_footprints_btc_transaction_threshold']:
-                self.notify_wallets[wallet_address] = balance_diff
+                if db_wallet['exchange_wallet'] == 0:
+                    self.notify_nonexchange[wallet_address] = balance_diff
+                if db_wallet['exchange_wallet'] == 1:
+                    self.notify_exchange[wallet_address] = balance_diff
 
     def __attach_table_to_email(self):
-        init.logger.info(f'Dinosaur Footprints - Wallets Found: {len(self.notify_wallets)}')
+        init.logger.info(f'Dinosaur Footprints - Non-Exchange Wallets Found: {len(self.notify_nonexchange)}')
+        init.logger.info(f'Dinosaur Footprints - Exchange Wallets Found: {len(self.notify_exchange)}')
         email = email_handler.GMail()
 
-        if len(self.notify_wallets) == 0:
-            email.add_report_to_email('Dinosaur Footprints', self.build_no_data_result())
-            return
+        if len(self.notify_nonexchange) == 0:
+            email.add_report_to_email('Dinosaur Footprints - Non-Exchange Report', self.build_no_data_result())
+        else:
+            nonexchange_table = self.build_html_table(['Wallet', 'Balance Change'], self.notify_nonexchange, 'dinosaur_footprints')
+            email.add_report_to_email('Dinosaur Footprints - Non-Exchange Report', nonexchange_table)
 
-        table = self.build_html_table(['Wallet', 'Balance Change'], self.notify_wallets, 'dinosaur_footprints')
-        email.add_report_to_email('Dinosaur Footprints', table)
+        if len(self.notify_exchange) == 0:
+            email.add_report_to_email('Dinosaur Footprints - Exchange Report', self.build_no_data_result())
+        else:
+            exchange_table = self.build_html_table(['Wallet', 'Balance Change'], self.notify_exchange, 'dinosaur_footprints')
+            email.add_report_to_email('Dinosaur Footprints - Exchange Report', exchange_table)

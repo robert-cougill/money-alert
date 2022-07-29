@@ -90,8 +90,6 @@
     "future_features": [
         "Specify when dormant wallets become active for dinosaur footprints - color code row older than 1 year",
         "Add actual unit test suite/framework/project/etc",
-        "Completely new report for gold and silver price tracking",
-        "Split dinosaur footprints, named wallets vs non named wallets",
-        "Add requirements.txt"
+        "Completely new report for gold and silver price tracking"
     ]
 }
