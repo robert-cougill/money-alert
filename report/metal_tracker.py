@@ -34,6 +34,3 @@ class MetalTracker(report.base_report.Report):
         image_body = self.embed_images(util.list_chart_files(self.CONST_CHART_FILE_DIRECTORY), self.metal_names.values())
         email = email_handler.GMail()
         email.add_report_to_email('Metal Tracker', image_body)
-
-    def cleanup_charts(self):
-        util.remove_charts_from_directory(self.CONST_CHART_FILE_DIRECTORY)
