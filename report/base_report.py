@@ -2,6 +2,7 @@ import api.bittrex
 import api.blockchain
 import api.coingecko
 import api.alphavantage
+import api.metalprice
 import init
 import json
 import random
@@ -14,6 +15,7 @@ class Report:
         self.blockchain = api.blockchain.Blockchain()
         self.coingecko = api.coingecko.Coingecko()
         self.alphavantage = api.alphavantage.AlphaVantage()
+        self.metalprice = api.metalprice.MetalPrice()
 
     def get_current_price_of_all_coins(self) -> typing.Dict:
         current_coin_price = dict()

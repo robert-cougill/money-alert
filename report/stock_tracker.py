@@ -18,11 +18,10 @@ class StockTracker(report.base_report.Report):
         init.logger.info(f'Stock Tracker - Stock Symbols: {init.config["stock_symbols"]}')
         for symbol in init.config['stock_symbols']:
             historical_data = json.loads(self.alphavantage.get_historical_data(symbol))
-            closing_values = []
-
             if 'Time Series (Daily)' not in historical_data:
                 return
 
+            closing_values = []
             history = historical_data['Time Series (Daily)']
             for key in history.keys():
                 closing_values.append(float(history[key]['4. close']))

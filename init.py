@@ -60,6 +60,7 @@ def load_config():
             "API_BITTREX_KEY": os.getenv('API_BITTREX_KEY'),
             "API_BITTREX_SECRET": os.getenv('API_BITTREX_SECRET'),
             "API_ALPHA_VANTAGE_KEY": os.getenv('API_ALPHA_VANTAGE_KEY'),
+            "API_METAL_PRICE_KEY": os.getenv('API_METAL_PRICE_KEY'),
             "MONEY_ALERT_EMAIL_SECRET": os.getenv('MONEY_ALERT_EMAIL_SECRET'),
             "MONEY_ALERT_EMAIL_USERNAME": os.getenv('MONEY_ALERT_EMAIL_USERNAME'),
             "PERSONAL_EMAILS": os.getenv('PERSONAL_EMAILS')

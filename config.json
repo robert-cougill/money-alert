@@ -29,6 +29,11 @@
             "host": "alpha-vantage.p.rapidapi.com",
             "key": "API_ALPHA_VANTAGE_KEY",
             "requests_per_minute": 5
+        },
+        "metal-price": {
+            "base_url": "https://api.metalpriceapi.com/v1",
+            "key": "API_METAL_PRICE_KEY",
+            "requests_per_minute": 5
         }
     },
     "report_settings": {
@@ -59,6 +64,7 @@
         "zrx": "0x"
     },
     "stock_symbols": ["LVOX"],
+    "metal_symbols": ["XAU","XAG"],
     "emails": ["PERSONAL_EMAILS"],
     "no_data_images": [
         "12EsqUCIFhYHStFh9PBDk4mpI7-gbqPbz",

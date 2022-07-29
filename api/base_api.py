@@ -13,7 +13,8 @@ class BaseAPI:
         enums.APIClient.BITTREX: round(util.timestamp()),
         enums.APIClient.BLOCKCHAIN: round(util.timestamp()),
         enums.APIClient.BLOCKCHAIN_V3: round(util.timestamp()),
-        enums.APIClient.ALPHAVANTAGE: round(util.timestamp())
+        enums.APIClient.ALPHAVANTAGE: round(util.timestamp()),
+        enums.APIClient.METALPRICE: round(util.timestamp())
     }
 
     CONST_STATUS_OK = int(200)
@@ -67,7 +68,7 @@ class BaseAPI:
             response = requests.request(method.value, url, params=params)
             self.__check_response_code(url, response.status_code)
             if response.status_code in self.CONST_HTTP_ERROR_CODES:
-                response = self.__retry_request(method, url)
+                response = self.__retry_request(method, url, params)
 
             return response
         # region Blockchain API
@@ -119,6 +120,20 @@ class BaseAPI:
 
             return response
         # region Alpha Vantage API
+
+        # region Metal Price API
+        if client == enums.APIClient.METALPRICE:
+            init.logger.debug(f'Metal Price endpoint called: {base_url}/{endpoint}')
+            params['api_key'] = init.config['clients'][client.value]['key']
+            url = self.__build_url(base_url, endpoint, endpoint_args, params)
+
+            response = requests.request(method.value, url, params=params)
+            self.__check_response_code(url, response.status_code)
+            if response.status_code in self.CONST_HTTP_ERROR_CODES:
+                response = self.__retry_request(method, url, params)
+
+            return response
+        # region Metal Price API
 
     def __retry_request(self, method: enums.RequestMethod = enums.RequestMethod.GET, url: str = None, params: typing.Optional[typing.Dict] = None, headers: typing.Any = None, body: typing.Optional[typing.Dict] = None):
         for i in range(1, 3):
