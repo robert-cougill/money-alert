@@ -19,6 +19,7 @@ class APIClient(enum.Enum):
     BLOCKCHAIN_V3 = 'blockchain-v3'
     COINGECKO = 'coingecko'
     ALPHAVANTAGE = 'alpha-vantage'
+    METALPRICE = 'metal-price'
 
 
 class DataInterval(enum.Enum):

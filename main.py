@@ -6,6 +6,7 @@ import report.public_company_holdings
 import report.dip_watcher
 import report.moving_average
 import report.stock_tracker
+import report.metal_tracker
 import sys
 import money_alert_unit_tests.unit_test
 import time
@@ -35,13 +36,15 @@ elif '--run-now' in sys.argv:
         trending_report.email_trenders = True
         public_holdings = report.public_company_holdings.PublicCompanyHoldings()
         dinosaur_report = report.dinosaur_footprints.DinosaurFootprints()
+        metal_tracker = report.metal_tracker.MetalTracker()
         stock_tracker = report.stock_tracker.StockTracker()
 
         init.scheduler.enter(0, 1, moving_average_report.run)
         init.scheduler.enter(1, 1, trending_report.run)
         init.scheduler.enter(2, 1, dinosaur_report.run)
         init.scheduler.enter(3, 1, public_holdings.run)
-        init.scheduler.enter(4, 1, stock_tracker.run)
+        init.scheduler.enter(4, 1, metal_tracker.run)
+        init.scheduler.enter(5, 1, stock_tracker.run)
         init.scheduler.run()
 
         email.send_email('24 Hour Reports - Forced Run')
@@ -64,6 +67,7 @@ elif '--daily' in sys.argv:
         trending_report = report.trending.Trending()
         public_holdings = report.public_company_holdings.PublicCompanyHoldings()
         dinosaur_report = report.dinosaur_footprints.DinosaurFootprints()
+        metal_tracker = report.metal_tracker.MetalTracker()
         stock_tracker = report.stock_tracker.StockTracker()
 
         while True:
@@ -74,7 +78,8 @@ elif '--daily' in sys.argv:
             init.scheduler.enter(run_time+1, 1, trending_report.run)
             init.scheduler.enter(run_time+2, 1, dinosaur_report.run)
             init.scheduler.enter(run_time+3, 1, public_holdings.run)
-            init.scheduler.enter(run_time+4, 1, stock_tracker.run)
+            init.scheduler.enter(run_time+4, 1, metal_tracker.run)
+            init.scheduler.enter(run_time+5, 1, stock_tracker.run)
             init.scheduler.run()
 
             email.send_email('24 Hour Reports')
