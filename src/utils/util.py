@@ -1,7 +1,7 @@
 import datetime
 import hashlib
 import hmac
-import init
+import pathlib
 import os
 import time
 import typing
@@ -59,7 +59,7 @@ def get_report_run_time(report_run_time: str) -> int:
 
 
 def configure_file_path(file_location: str):
-    return os.path.join(init.project_directory, file_location)
+    return os.path.join(pathlib.Path(__file__).parent.parent, file_location)
 
 
 def list_chart_files(directory: str):

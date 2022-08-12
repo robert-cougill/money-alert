@@ -1,9 +1,9 @@
 import sqlite3
-import util
+import src.utils.util
 
 
 class DatabaseHelper:
-    CONST_DB_LOCATION = util.configure_file_path('report/report_data/money_alert_database.db')
+    CONST_DB_LOCATION = src.utils.util.configure_file_path('report/report_data/money_alert_database.db')
 
     def create_connection(self):
         """

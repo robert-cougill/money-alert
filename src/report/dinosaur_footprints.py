@@ -1,19 +1,19 @@
 import ast
 import bs4
 import collections
-import database_util
-import email_handler
-import init
-import report.base_report
+import src.utils.database_util
+import src.email.email_handler
+import src.init
+import src.report.base_report
 import requests
 import socket
 import urllib3
-import util
+import src.utils.util
 
 
-class DinosaurFootprints(report.base_report.Report):
+class DinosaurFootprints(src.report.base_report.Report):
     def __init__(self):
-        report.base_report.Report.__init__(self)
+        src.report.base_report.Report.__init__(self)
         self.wallets = []
         self.top_wallets = []
         self.insertion_wallet_addresses = []
@@ -67,9 +67,9 @@ class DinosaurFootprints(report.base_report.Report):
                         exchange_wallet_addresses[named_link.split('/')[-1]] += [address_link.get_text()]
                         all_bitinfocharts_addresses.append(address_link.get_text())
             except (ValueError, urllib3.exceptions.InvalidChunkLength, urllib3.exceptions.ProtocolError, requests.exceptions.ChunkedEncodingError, urllib3.exceptions.ReadTimeoutError, socket.timeout, requests.exceptions.ConnectionError):
-                init.logger.debug(f'Dinosaur Footprints - {named_link} failed to load properly.')
+                src.init.logger.debug(f'Dinosaur Footprints - {named_link} failed to load properly.')
 
-        con = database_util.DatabaseHelper().create_connection()
+        con = src.utils.database_util.DatabaseHelper().create_connection()
         rows = con.cursor().execute('SELECT DISTINCT wallet_address FROM top_bitcoin_wallet_report_data').fetchall()
         if len(rows) != 0:
             for row in rows:
@@ -96,7 +96,7 @@ class DinosaurFootprints(report.base_report.Report):
         con.close()
 
     def __scrape_website(self, url, table_class_name):
-        init.logger.debug(f'Dinosaur Footprints - Scraping {url}')
+        src.init.logger.debug(f'Dinosaur Footprints - Scraping {url}')
         response = requests.get(url)
         soup = bs4.BeautifulSoup(response.text, 'html.parser')
 
@@ -106,7 +106,7 @@ class DinosaurFootprints(report.base_report.Report):
 
     @staticmethod
     def __extract_wallet_addresses(tables, wallets):
-        init.logger.debug('Dinosaur Footprints - Extract Wallet Addresses')
+        src.init.logger.debug('Dinosaur Footprints - Extract Wallet Addresses')
         rows = []
         for table_index in range(len(tables)):
             rows.extend(tables[table_index].find_all('tr'))
@@ -124,8 +124,8 @@ class DinosaurFootprints(report.base_report.Report):
                 wallets.append(values[0])
 
     def __add_new_wallet_addresses(self):
-        init.logger.debug('Dinosaur Footprints - Adding new wallet addresses')
-        con = database_util.DatabaseHelper().create_connection()
+        src.init.logger.debug('Dinosaur Footprints - Adding new wallet addresses')
+        con = src.utils.database_util.DatabaseHelper().create_connection()
         rows = con.cursor().execute('SELECT DISTINCT wallet_address FROM top_bitcoin_wallet_report_data').fetchall()
         if len(rows) != 0:
             for row in rows:
@@ -135,15 +135,15 @@ class DinosaurFootprints(report.base_report.Report):
         for wallet in self.wallets:
             if wallet not in self.top_wallets:
                 insert_list.append(tuple([wallet]))
-                init.logger.debug(f'Dinosaur Footprints - Inserting {wallet} into top_bitcoin_wallet_report_data')
+                src.init.logger.debug(f'Dinosaur Footprints - Inserting {wallet} into top_bitcoin_wallet_report_data')
 
         con.cursor().executemany('INSERT INTO top_bitcoin_wallet_report_data (wallet_address) VALUES(?) ON CONFLICT DO NOTHING', insert_list)
         con.commit()
         con.close()
 
     def __get_wallet_information(self):
-        init.logger.debug('Dinosaur Footprints - Get Wallet Information')
-        con = database_util.DatabaseHelper().create_connection()
+        src.init.logger.debug('Dinosaur Footprints - Get Wallet Information')
+        con = src.utils.database_util.DatabaseHelper().create_connection()
         db_wallets = con.cursor().execute('SELECT * FROM top_bitcoin_wallet_report_data ORDER BY balance DESC').fetchall()
 
         db_wallet_dict = dict()
@@ -188,18 +188,18 @@ class DinosaurFootprints(report.base_report.Report):
 
     def __compare_wallet_information(self, db_wallet, blockchain_wallet, wallet_address):
         if db_wallet['balance'] != blockchain_wallet['final_balance']:
-            balance_diff = util.convert_satoshis_to_btc(blockchain_wallet['final_balance'] - db_wallet['balance'])
+            balance_diff = src.utils.util.convert_satoshis_to_btc(blockchain_wallet['final_balance'] - db_wallet['balance'])
 
-            if balance_diff > init.config['report_settings']['dinosaur_footprints_btc_transaction_threshold'] or balance_diff < -init.config['report_settings']['dinosaur_footprints_btc_transaction_threshold']:
+            if balance_diff > src.init.config['report_settings']['dinosaur_footprints_btc_transaction_threshold'] or balance_diff < -src.init.config['report_settings']['dinosaur_footprints_btc_transaction_threshold']:
                 if db_wallet['exchange_wallet'] == 0:
                     self.notify_nonexchange[wallet_address] = balance_diff
                 if db_wallet['exchange_wallet'] == 1:
                     self.notify_exchange[wallet_address] = balance_diff
 
     def __attach_table_to_email(self):
-        init.logger.info(f'Dinosaur Footprints - Non-Exchange Wallets Found: {len(self.notify_nonexchange)}')
-        init.logger.info(f'Dinosaur Footprints - Exchange Wallets Found: {len(self.notify_exchange)}')
-        email = email_handler.GMail()
+        src.init.logger.info(f'Dinosaur Footprints - Non-Exchange Wallets Found: {len(self.notify_nonexchange)}')
+        src.init.logger.info(f'Dinosaur Footprints - Exchange Wallets Found: {len(self.notify_exchange)}')
+        email = src.email.email_handler.GMail()
 
         if len(self.notify_nonexchange) == 0:
             email.add_report_to_email('Dinosaur Footprints - Non-Exchange Report', self.build_no_data_result())

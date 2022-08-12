@@ -1,32 +1,32 @@
 import email.mime.multipart
 import email.mime.text
 import email.mime.image
-import init
+import src.init
 import os
 import smtplib
-import util
-import chart_builder  # leave me at the bottom, order matters here
+import src.utils.util
+import src.report.chart_builder  # leave me at the bottom, order matters here
 
 
 class GMail:
     def __init__(self):
-        self.hostname = init.config['email']['hostname']
-        self.username = init.config['email']['username']
-        self.password = init.config['email']['secret']
+        self.hostname = src.init.config['email']['hostname']
+        self.username = src.init.config['email']['username']
+        self.password = src.init.config['email']['secret']
 
     @staticmethod
     def add_report_to_email(report_name: str, report_content: str = None):
-        init.email_content.append({'name': report_name, 'contents': report_content})
+        src.init.email_content.append({'name': report_name, 'contents': report_content})
 
     def send_error_email(self, subject, stacktrace):
         self.add_report_to_email(subject, stacktrace)
         self.send_email(subject)
-        init.email_content.clear()
+        src.init.email_content.clear()
 
     def send_email(self, subject: str):
         message = email.mime.multipart.MIMEMultipart('related')
         message['From'] = self.username
-        message['To'] = ', '.join(init.config['emails'])
+        message['To'] = ', '.join(src.init.config['emails'])
         message['Subject'] = subject
 
         content = self.__get_email_content()
@@ -37,18 +37,18 @@ class GMail:
         with smtplib.SMTP(self.hostname) as server:
             server.starttls()
             server.login(self.username, self.password)
-            server.sendmail(self.username, init.config['emails'], message.as_string())
+            server.sendmail(self.username, src.init.config['emails'], message.as_string())
 
-        init.email_content.clear()
+        src.init.email_content.clear()
 
     @staticmethod
     def __get_email_content() -> str:
         report_sections = ''
 
-        for report in init.email_content:
+        for report in src.init.email_content:
             report_sections += GMail.__get_report_body(report)
 
-        template_path = util.configure_file_path('email_template.html')
+        template_path = src.utils.util.configure_file_path('email/email_template.html')
         file = open(template_path, 'r')
         email_template = file.read()
         file.close()
@@ -68,7 +68,7 @@ class GMail:
 
     @staticmethod
     def __attach_images(message):
-        chart_directory = chart_builder.ChartBuilder.CONST_CHART_FILE_DIRECTORY
+        chart_directory = src.report.chart_builder.ChartBuilder.CONST_CHART_FILE_DIRECTORY
         charts = os.listdir(chart_directory)
         for chart in charts:
             file = open(chart_directory + chart, 'rb')

@@ -1,31 +1,31 @@
-import database_util
-import email_handler
-import init
+import src.utils.database_util
+import src.email.email_handler
+import src.init
 import json
-import report.base_report
+import src.report.base_report
 import time
 
 
-class Trending(report.base_report.Report):
+class Trending(src.report.base_report.Report):
     CONST_DAY_IN_SECONDS = 60 * 60 * 24
     CONST_FIVE_MINUTES_IN_SECONDS = 60 * 5
     CONST_DATA_INTEGRITY_THRESHOLD = 60 * 60 * 25
 
     def __init__(self):
-        report.base_report.Report.__init__(self)
+        src.report.base_report.Report.__init__(self)
         self.formatted_response = None
         self.trenders = dict()
         self.email_trenders = False
 
     def run(self):
         self.__pull_trenders_and_update_trending_tracker()
-        email = email_handler.GMail()
+        email = src.email.email_handler.GMail()
         wallets = dict((k, v) for k, v in self.trenders.items() if v >= 5)
-        init.logger.info(f'Trending Report - Wallets Found: {len(wallets.keys())}')
+        src.init.logger.info(f'Trending Report - Wallets Found: {len(wallets.keys())}')
 
         if self.email_trenders:
             self.formatted_response = [(key, value) for key, value in self.trenders.items()]
-            self.formatted_response = {key: value for key, value in sorted(self.formatted_response, key=lambda x: x[1]) if value >= init.config['report_settings']['trending_report_appearance_threshold']}
+            self.formatted_response = {key: value for key, value in sorted(self.formatted_response, key=lambda x: x[1]) if value >= src.init.config['report_settings']['trending_report_appearance_threshold']}
             table = self.build_html_table(['Coin', 'Appearances'], self.formatted_response, 'trending')
             email.add_report_to_email('Trending Report', table)
             return
@@ -35,7 +35,7 @@ class Trending(report.base_report.Report):
     def __pull_trenders_and_update_trending_tracker(self):
         last_modify_date = 0
         self.trenders = dict()
-        con = database_util.DatabaseHelper().create_connection()
+        con = src.utils.database_util.DatabaseHelper().create_connection()
         rows = con.cursor().execute('SELECT coingecko_id, appearances, modify_date FROM trending_report_data').fetchall()
         if len(rows) != 0:
             for row in rows:
@@ -46,7 +46,7 @@ class Trending(report.base_report.Report):
         if (time.time() - last_modify_date) > self.CONST_DATA_INTEGRITY_THRESHOLD:
             self.trenders = dict()
         elif (time.time() - last_modify_date) < (self.CONST_DAY_IN_SECONDS - self.CONST_FIVE_MINUTES_IN_SECONDS):
-            init.logger.info('Trending Report - Less than a day has passed since the last Trending report run')
+            src.init.logger.info('Trending Report - Less than a day has passed since the last Trending report run')
             return
 
         for i in range(1, 6):
@@ -90,11 +90,11 @@ class Trending(report.base_report.Report):
         con.cursor().executemany('DELETE FROM trending_report_data WHERE coingecko_id=?', delete_list)
         con.commit()
         con.close()
-        init.logger.debug(f'Trending Report - trending_report_data Table Contents {insert_list}')
+        src.init.logger.debug(f'Trending Report - trending_report_data Table Contents {insert_list}')
 
     def __check_trenders_email_threshold(self):
         for appearance in self.trenders.values():
-            if appearance >= init.config['report_settings']['trending_report_appearance_threshold']:
+            if appearance >= src.init.config['report_settings']['trending_report_appearance_threshold']:
                 self.email_trenders = True
                 return
             else:

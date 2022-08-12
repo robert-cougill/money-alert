@@ -1,4 +1,4 @@
-import email_handler
+import src.email.email_handler
 import init
 import report.trending
 import report.dinosaur_footprints
@@ -8,10 +8,11 @@ import report.moving_average
 import report.stock_tracker
 import report.metal_tracker
 import sys
-import money_alert_unit_tests.unit_test
+import src.unit_tests.unit_test
 import time
 import traceback
-import util
+import src.utils.util
+
 
 if '--dev' in sys.argv:
     init.logger.info('Development Mode')
@@ -28,7 +29,7 @@ elif '--build' in sys.argv:
 
 elif '--run-now' in sys.argv:
     init.logger.info('Running Reports Now!')
-    email = email_handler.GMail()
+    email = src.email.email_handler.GMail()
 
     try:
         moving_average_report = report.moving_average.MovingAverages()
@@ -57,10 +58,10 @@ elif '--run-now' in sys.argv:
         quit()
 
 elif '--daily' in sys.argv:
-    email = email_handler.GMail()
+    email = src.email.email_handler.GMail()
 
     try:
-        unit_test = money_alert_unit_tests.unit_test.UnitTest()
+        unit_test = src.unit_tests.unit_test.UnitTest()
         unit_test.launch_unit_test()
 
         moving_average_report = report.moving_average.MovingAverages()
@@ -71,7 +72,7 @@ elif '--daily' in sys.argv:
         stock_tracker = report.stock_tracker.StockTracker()
 
         while True:
-            run_time = util.get_report_run_time(init.config['report_settings']['daily_report_run_time'])
+            run_time = src.utils.util.get_report_run_time(init.config['report_settings']['daily_report_run_time'])
             init.logger.info(f'Scheduler - Time Left: {run_time} seconds')
 
             init.scheduler.enter(run_time, 1, moving_average_report.run)
@@ -92,7 +93,7 @@ elif '--daily' in sys.argv:
         quit()
 
 elif '--watchers' in sys.argv:
-    email = email_handler.GMail()
+    email = src.email.email_handler.GMail()
 
     try:
         init.logger.info('Running supervisor reports')

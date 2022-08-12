@@ -1,12 +1,12 @@
-import api.base_api
-import enums
+import src.api.base_api
+import src.enums
 import typing
 
 
 # API Doc: https://www.coingecko.com/api/documentations/v3/
-class Coingecko(api.base_api.BaseAPI):
+class Coingecko(src.api.base_api.BaseAPI):
     def get_ping(self):
-        request = api.base_api.BaseAPI.request_data(self, enums.APIClient.COINGECKO, 'ping')
+        request = src.api.base_api.BaseAPI.request_data(self, src.enums.APIClient.COINGECKO, 'ping')
         return request.status_code
 
     def get_simple_price(self, coin_list: typing.Dict):
@@ -26,22 +26,22 @@ class Coingecko(api.base_api.BaseAPI):
             'vs_currencies': 'usd',
         }
 
-        request = api.base_api.BaseAPI.request_data(self, enums.APIClient.COINGECKO, 'simple', endpoint_args=args, params=params)
+        request = src.api.base_api.BaseAPI.request_data(self, src.enums.APIClient.COINGECKO, 'simple', endpoint_args=args, params=params)
         return request.content
 
     def get_simple_supported_vs_currency(self):
-        request = api.base_api.BaseAPI.request_data(self, enums.APIClient.COINGECKO, 'simple/supported_vs_currencies')
+        request = src.api.base_api.BaseAPI.request_data(self, src.enums.APIClient.COINGECKO, 'simple/supported_vs_currencies')
         return request.content
 
     def get_coins_list(self, include_platform: bool = False):
         params = {
             'include_platform': include_platform
         }
-        request = api.base_api.BaseAPI.request_data(self, enums.APIClient.COINGECKO, 'coins/list', params=params)
+        request = src.api.base_api.BaseAPI.request_data(self, src.enums.APIClient.COINGECKO, 'coins/list', params=params)
         return request.content
 
     def get_coins_by_id(self, coin_id: str):
-        request = api.base_api.BaseAPI.request_data(self, enums.APIClient.COINGECKO, 'coins', endpoint_args=coin_id)
+        request = src.api.base_api.BaseAPI.request_data(self, src.enums.APIClient.COINGECKO, 'coins', endpoint_args=coin_id)
         return request.content
 
     def get_coin_history(self, coin_id: str, historical_date: str):
@@ -51,10 +51,10 @@ class Coingecko(api.base_api.BaseAPI):
             'date': historical_date
         }
 
-        request = api.base_api.BaseAPI.request_data(self, enums.APIClient.COINGECKO, 'coins', endpoint_args=args, params=params)
+        request = src.api.base_api.BaseAPI.request_data(self, src.enums.APIClient.COINGECKO, 'coins', endpoint_args=args, params=params)
         return request.content
 
-    def get_market_chart(self, coin_id: str, days_ago: int, data_interval: enums.DataInterval = enums.DataInterval.DAILY):
+    def get_market_chart(self, coin_id: str, days_ago: int, data_interval: src.enums.DataInterval = src.enums.DataInterval.DAILY):
         args = coin_id + '/market_chart'
         params = {
             'vs_currency': 'usd',
@@ -62,7 +62,7 @@ class Coingecko(api.base_api.BaseAPI):
             'interval': data_interval.value
         }
 
-        request = api.base_api.BaseAPI.request_data(self, enums.APIClient.COINGECKO, 'coins', endpoint_args=args, params=params)
+        request = src.api.base_api.BaseAPI.request_data(self, src.enums.APIClient.COINGECKO, 'coins', endpoint_args=args, params=params)
         return request.content
 
     def get_market_chart_range(self, coin_id: str, from_date: int, to_date: int):
@@ -74,7 +74,7 @@ class Coingecko(api.base_api.BaseAPI):
             'to': to_date
         }
 
-        request = api.base_api.BaseAPI.request_data(self, enums.APIClient.COINGECKO, 'coins', endpoint_args=args, params=params)
+        request = src.api.base_api.BaseAPI.request_data(self, src.enums.APIClient.COINGECKO, 'coins', endpoint_args=args, params=params)
         return request.content
 
     def get_markets(self, price_change_percentage: str):
@@ -85,13 +85,13 @@ class Coingecko(api.base_api.BaseAPI):
             'price_change_percentage': price_change_percentage
         }
 
-        request = api.base_api.BaseAPI.request_data(self, enums.APIClient.COINGECKO, 'coins/markets', params=params)
+        request = src.api.base_api.BaseAPI.request_data(self, src.enums.APIClient.COINGECKO, 'coins/markets', params=params)
         return request.content
 
     def get_trending(self):
-        request = api.base_api.BaseAPI.request_data(self, enums.APIClient.COINGECKO, 'search/trending')
+        request = src.api.base_api.BaseAPI.request_data(self, src.enums.APIClient.COINGECKO, 'search/trending')
         return request.content
 
     def get_public_company_holdings(self, coin_id: str):
-        request = api.base_api.BaseAPI.request_data(self, enums.APIClient.COINGECKO, 'companies/public_treasury', endpoint_args=coin_id)
+        request = src.api.base_api.BaseAPI.request_data(self, src.enums.APIClient.COINGECKO, 'companies/public_treasury', endpoint_args=coin_id)
         return request.content

@@ -1,16 +1,13 @@
-import api.base_api
-from datetime import datetime, timedelta
-import enums
+import src.api.base_api
+import datetime
+import src.enums
 
 
 # API Doc: https://metalpriceapi.com/documentation
-import init
-
-
-class MetalPrice(api.base_api.BaseAPI):
+class MetalPrice(src.api.base_api.BaseAPI):
     def get_historical_data(self, symbol: str):
-        end_date = datetime.now()
-        start_date = end_date.today() - timedelta(days=364)
+        end_date = datetime.datetime.now()
+        start_date = end_date.today() - datetime.timedelta(days=364)
         params = {
             'base': 'USD',
             'start_date': start_date.strftime('%Y-%m-%d'),
@@ -18,5 +15,5 @@ class MetalPrice(api.base_api.BaseAPI):
             'currencies': symbol
         }
 
-        request = api.base_api.BaseAPI.request_data(self, enums.APIClient.METALPRICE, 'timeframe', params=params)
+        request = src.api.base_api.BaseAPI.request_data(self, src.enums.APIClient.METALPRICE, 'timeframe', params=params)
         return request.content
