@@ -65,7 +65,7 @@ class MovingAverages(src.report.base_report.Report):
                 time_now = datetime.datetime.now()
                 data_list = []
 
-                for day in range(1, 6):
+                for day in range(1, 366):
                     date = time_now - datetime.timedelta(days=day)
                     formatted_date = date.strftime('%d-%m-%Y')
                     response = json.loads(self.coingecko.get_coin_history(coin, formatted_date))
