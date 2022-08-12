@@ -35,9 +35,9 @@ class ChartBuilder:
 
 
         # Plot list, min, and max values
-        ax.plot(x, historic_data, linestyle='-', color='#179de2')
-        ax.plot(max_x, max_y, marker='o', color='#24a916')
-        ax.plot(min_x, min_y, marker='o', color='#e21717')
+        ax.plot(x, historic_data, linestyle='-', color='#127700')
+        ax.plot(max_x, max_y, marker='o', color='#33d23d')
+        ax.plot(min_x, min_y, marker='o', color='#dc3131')
 
         # Display numeric values for min and max
         ax.add_artist(
@@ -57,6 +57,13 @@ class ChartBuilder:
                 boxcoords=('axes fraction', 'data'),
                 box_alignment=(0., 0.5),
                 arrowprops=dict(arrowstyle='-', color='gray')))
+
+        ax.add_artist(
+            box.AnchoredText(
+                str(round(historic_data[0], 2)),
+                loc='lower right', prop=dict(size=10), frameon=False,
+                bbox_to_anchor=(1.01, .985),
+                bbox_transform=ax.transAxes))
 
         plt.savefig(self.CONST_CHART_FILE_DIRECTORY + asset_name + '.png')
         plt.close(fig)
