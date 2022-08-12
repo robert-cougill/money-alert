@@ -1,7 +1,6 @@
 import json
 import logging
 import os
-import pathlib
 import re
 import sched
 import sys
@@ -21,9 +20,6 @@ global scheduler
 def init():
     global email_content
     email_content = []
-
-    global project_directory
-    project_directory = pathlib.Path(__file__).parent
 
     load_config()
     set_environment_variables()

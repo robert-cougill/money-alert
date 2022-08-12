@@ -48,7 +48,7 @@ class GMail:
         for report in src.init.email_content:
             report_sections += GMail.__get_report_body(report)
 
-        template_path = src.utils.util.configure_file_path('email_template.html')
+        template_path = src.utils.util.configure_file_path('email/email_template.html')
         file = open(template_path, 'r')
         email_template = file.read()
         file.close()

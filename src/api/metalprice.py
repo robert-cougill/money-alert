@@ -6,7 +6,7 @@ import src.enums
 # API Doc: https://metalpriceapi.com/documentation
 class MetalPrice(src.api.base_api.BaseAPI):
     def get_historical_data(self, symbol: str):
-        end_date = datetime.now()
+        end_date = datetime.datetime.now()
         start_date = end_date.today() - datetime.timedelta(days=364)
         params = {
             'base': 'USD',

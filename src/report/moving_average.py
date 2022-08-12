@@ -1,4 +1,4 @@
-import chart_builder
+import src.report.chart_builder
 import src.utils.database_util
 import datetime
 import src.email.email_handler
@@ -15,7 +15,7 @@ class MovingAverages(src.report.base_report.Report):
 
     def __init__(self):
         src.report.base_report.Report.__init__(self)
-        self.charts = chart_builder.ChartBuilder()
+        self.charts = src.report.chart_builder.ChartBuilder()
         self.coin_history = dict()
 
     def build_report_data(self):
@@ -65,7 +65,7 @@ class MovingAverages(src.report.base_report.Report):
                 time_now = datetime.datetime.now()
                 data_list = []
 
-                for day in range(1, 366):
+                for day in range(1, 6):
                     date = time_now - datetime.timedelta(days=day)
                     formatted_date = date.strftime('%d-%m-%Y')
                     response = json.loads(self.coingecko.get_coin_history(coin, formatted_date))

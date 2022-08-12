@@ -1,5 +1,5 @@
 import src.email.email_handler
-import chart_builder
+import src.report.chart_builder
 import src.init
 import json
 import src.report.base_report
@@ -11,7 +11,7 @@ class StockTracker(src.report.base_report.Report):
 
     def __init__(self):
         src.report.base_report.Report.__init__(self)
-        self.charts = chart_builder.ChartBuilder()
+        self.charts = src.report.chart_builder.ChartBuilder()
         self.stock_history = dict()
 
     def run(self):
