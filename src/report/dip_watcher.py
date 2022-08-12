@@ -1,13 +1,13 @@
-import email_handler
-import init
+import src.email.email_handler
+import src.init
 import json
-import report.base_report
+import src.report.base_report
 import time
 
 
-class DipWatcher(report.base_report.Report):
+class DipWatcher(src.report.base_report.Report):
     def __init__(self):
-        report.base_report.Report.__init__(self)
+        src.report.base_report.Report.__init__(self)
         self.price_dict = dict()
         self.price_dict['bitcoin'] = list()
         self.last_email_sent = time.time()
@@ -21,12 +21,12 @@ class DipWatcher(report.base_report.Report):
 
         current_price = self.blockchain.get_current_price('BTC-USD')
         if current_price is None:
-            init.logger.info('Dip Watcher - API returned a null value')
+            src.init.logger.info('Dip Watcher - API returned a null value')
             return
 
         response = json.loads(current_price)
         if 'last_trade_price' not in response:
-            init.logger.info(f'Dip Watcher - Response is missing key: {response}')
+            src.init.logger.info(f'Dip Watcher - Response is missing key: {response}')
             return
 
         self.price_dict['bitcoin'].insert(0, response['last_trade_price'])
@@ -47,9 +47,9 @@ class DipWatcher(report.base_report.Report):
             twelve_hour_percent_change = (self.price_dict['bitcoin'][0] - self.price_dict['bitcoin'][719]) / self.price_dict['bitcoin'][719] * 100
             self.price_dict['bitcoin'].pop()
 
-        init.logger.info(f'Dip Watcher - BTC Price: {self.price_dict["bitcoin"][0]} | 1: {one_hour_percent_change} | 2: {two_hour_percent_change} | 4: {four_hour_percent_change} | 8: {eight_hour_percent_change} | 12: {twelve_hour_percent_change}')
+        src.init.logger.info(f'Dip Watcher - BTC Price: {self.price_dict["bitcoin"][0]} | 1: {one_hour_percent_change} | 2: {two_hour_percent_change} | 4: {four_hour_percent_change} | 8: {eight_hour_percent_change} | 12: {twelve_hour_percent_change}')
 
-        watcher_threshold = init.config['report_settings']['dip_watcher_percentage_threshold']
+        watcher_threshold = src.init.config['report_settings']['dip_watcher_percentage_threshold']
         if (one_hour_percent_change <= watcher_threshold
                 or two_hour_percent_change <= watcher_threshold
                 or four_hour_percent_change <= watcher_threshold
@@ -59,5 +59,5 @@ class DipWatcher(report.base_report.Report):
             # only send once for the amount of time in seconds
             if (time.time() - self.last_email_sent) > 600:
                 self.last_email_sent = time.time()
-                email = email_handler.GMail()
+                email = src.email.email_handler.GMail()
                 email.send_email('BTC has dipped! Current Price: ' + '{:.2f}'.format(self.price_dict['bitcoin'][0]))

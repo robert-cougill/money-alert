@@ -1,27 +1,27 @@
 import chart_builder
-import database_util
+import src.utils.database_util
 import datetime
-import email_handler
-import init
+import src.email.email_handler
+import src.init
 import json
-import report.base_report
-import util
+import src.report.base_report
+import src.utils.util
 
 
-class MovingAverages(report.base_report.Report):
+class MovingAverages(src.report.base_report.Report):
     CONST_REPORT = 'moving_average'
     CONST_REPORT_TITLE = 'Moving Average'
-    CONST_CHART_FILE_DIRECTORY = util.configure_file_path('report/report_data/charts/')
+    CONST_CHART_FILE_DIRECTORY = src.utils.util.configure_file_path('report/report_data/charts/')
 
     def __init__(self):
-        report.base_report.Report.__init__(self)
+        src.report.base_report.Report.__init__(self)
         self.charts = chart_builder.ChartBuilder()
         self.coin_history = dict()
 
     def build_report_data(self):
-        init.logger.info(f'Moving Average - Starting to Build {self.CONST_REPORT_TITLE} Report Data')
+        src.init.logger.info(f'Moving Average - Starting to Build {self.CONST_REPORT_TITLE} Report Data')
         self.__build_historical_coin_data()
-        init.logger.info(f'Moving Average - Finished Building {self.CONST_REPORT_TITLE} Report Data')
+        src.init.logger.info(f'Moving Average - Finished Building {self.CONST_REPORT_TITLE} Report Data')
 
     def run(self):
         self.__validate_report_data()
@@ -35,13 +35,13 @@ class MovingAverages(report.base_report.Report):
         sorted_coins = dict(sorted(coins.items(), key=lambda item: item[1], reverse=True))
         ordered_coins = sorted_coins.keys()
 
-        image_body = self.embed_images(util.list_chart_files(self.CONST_CHART_FILE_DIRECTORY), ordered_coins)
-        email = email_handler.GMail()
+        image_body = self.embed_images(src.utils.util.list_chart_files(self.CONST_CHART_FILE_DIRECTORY), ordered_coins)
+        email = src.email.email_handler.GMail()
         email.add_report_to_email('Moving Averages', image_body)
         email.send_email('Moving Averages')
 
-        util.remove_charts_from_directory(self.CONST_CHART_FILE_DIRECTORY)
-        init.logger.info('Moving Average - Report Ran')
+        src.utils.util.remove_charts_from_directory(self.CONST_CHART_FILE_DIRECTORY)
+        src.init.logger.info('Moving Average - Report Ran')
 
     def __validate_report_data(self):
         self.__read_data_from_db()
@@ -50,18 +50,18 @@ class MovingAverages(report.base_report.Report):
         today_time = datetime.datetime.now()
         today_date = today_time.strftime('%m-%d-%Y')
 
-        con = database_util.DatabaseHelper().create_connection()
+        con = src.utils.database_util.DatabaseHelper().create_connection()
         last_run = con.cursor().execute('SELECT last_run_datetime FROM report_run_time WHERE report_name = ?', tuple([self.CONST_REPORT])).fetchone()
         con.close()
 
         if last_run is None or last_run[0] != today_date:
             self.__get_current_price_and_adjust_history()
-            database_util.DatabaseHelper().update_report_run_time(self.CONST_REPORT, today_date)
+            src.utils.database_util.DatabaseHelper().update_report_run_time(self.CONST_REPORT, today_date)
 
     def __build_historical_coin_data(self):
-        for coin in init.coin_list.values():
+        for coin in src.init.coin_list.values():
             if not (coin in self.coin_history):
-                init.logger.warning(f'Moving Average - Building data list for {coin}. This will take a few minutes.')
+                src.init.logger.warning(f'Moving Average - Building data list for {coin}. This will take a few minutes.')
                 time_now = datetime.datetime.now()
                 data_list = []
 
@@ -73,16 +73,16 @@ class MovingAverages(report.base_report.Report):
                     try:
                         data_list.append(response['market_data']['current_price']['usd'])
                     except KeyError:
-                        init.logger.info(f"Moving Average - No market_data for coin {coin} on date {date.strftime('%Y-%m-%d')}")
+                        src.init.logger.info(f"Moving Average - No market_data for coin {coin} on date {date.strftime('%Y-%m-%d')}")
 
-                init.logger.warning(f'Moving Average - Finished building list for {coin}')
+                src.init.logger.warning(f'Moving Average - Finished building list for {coin}')
                 self.coin_history[coin] = data_list
 
         self.__write_data_to_db()
 
     def __get_current_price_and_adjust_history(self):
-        init.logger.debug('Moving Average - Adjusting History')
-        for coin in init.coin_list.values():
+        src.init.logger.debug('Moving Average - Adjusting History')
+        for coin in src.init.coin_list.values():
             date_now = datetime.datetime.now() - datetime.timedelta(days=1)
             formatted_date = date_now.strftime('%d-%m-%Y')
             response = json.loads(self.coingecko.get_coin_history(coin, formatted_date))
@@ -94,8 +94,8 @@ class MovingAverages(report.base_report.Report):
         self.__write_data_to_db()
 
     def __write_data_to_db(self):
-        init.logger.debug('Moving Average - Write Data to DB')
-        con = database_util.DatabaseHelper().create_connection()
+        src.init.logger.debug('Moving Average - Write Data to DB')
+        con = src.utils.database_util.DatabaseHelper().create_connection()
 
         insert_list = []
         for key, value in self.coin_history.items():
@@ -107,8 +107,8 @@ class MovingAverages(report.base_report.Report):
         con.close()
 
     def __read_data_from_db(self):
-        init.logger.debug('Moving Average - Read Data From DB')
-        con = database_util.DatabaseHelper().create_connection()
+        src.init.logger.debug('Moving Average - Read Data From DB')
+        con = src.utils.database_util.DatabaseHelper().create_connection()
 
         select_statement = 'SELECT coin_id, date_specific_data FROM moving_average_report_data'
         rows = con.cursor().execute(select_statement).fetchall()

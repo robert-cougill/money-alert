@@ -1,9 +1,9 @@
-import api.bittrex
-import api.blockchain
-import api.coingecko
-import api.alphavantage
-import api.metalprice
-import init
+import src.api.bittrex
+import src.api.blockchain
+import src.api.coingecko
+import src.api.alphavantage
+import src.api.metalprice
+import src.init
 import json
 import random
 import typing
@@ -11,15 +11,15 @@ import typing
 
 class Report:
     def __init__(self):
-        self.bittrex = api.bittrex.Bittrex()
-        self.blockchain = api.blockchain.Blockchain()
-        self.coingecko = api.coingecko.Coingecko()
-        self.alphavantage = api.alphavantage.AlphaVantage()
-        self.metalprice = api.metalprice.MetalPrice()
+        self.bittrex = src.api.bittrex.Bittrex()
+        self.blockchain = src.api.blockchain.Blockchain()
+        self.coingecko = src.api.coingecko.Coingecko()
+        self.alphavantage = src.api.alphavantage.AlphaVantage()
+        self.metalprice = src.api.metalprice.MetalPrice()
 
     def get_current_price_of_all_coins(self) -> typing.Dict:
         current_coin_price = dict()
-        coin_price = self.coingecko.get_simple_price(init.coin_list)
+        coin_price = self.coingecko.get_simple_price(src.init.coin_list)
         coins = json.loads(coin_price)
 
         for i in coins:
@@ -40,7 +40,7 @@ class Report:
         return body
 
     def build_no_data_result(self) -> str:
-        uuid = random.choice(init.config['no_data_images'])
+        uuid = random.choice(src.init.config['no_data_images'])
         image = '<img class="no-data-image" src="https://drive.google.com/uc?export=view&id=RANDOM" />'
         image = image.replace("RANDOM", uuid)
         return image

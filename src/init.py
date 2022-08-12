@@ -6,7 +6,7 @@ import re
 import sched
 import sys
 import time
-import util
+import src.utils.util
 
 global coin_list
 global config
@@ -31,8 +31,8 @@ def init():
     create_report_data_directory()
     create_scheduler()
 
-    import database_util
-    database_util.DatabaseHelper().create_database()
+    import src.utils.database_util
+    src.utils.database_util.DatabaseHelper().create_database()
 
 
 def set_environment_variables():
@@ -47,14 +47,14 @@ def set_environment_variables():
     elif '--build' in sys.argv:
         logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
     elif '--daily' in sys.argv:
-        logging.basicConfig(filename=util.configure_file_path('/var/log/money-alert-daily.log'), level=config['log_level'], format='%(asctime)s [%(levelname)s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+        logging.basicConfig(filename=src.utils.util.configure_file_path('/var/log/money-alert-daily.log'), level=config['log_level'], format='%(asctime)s [%(levelname)s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
     elif '--watchers' in sys.argv:
-        logging.basicConfig(filename=util.configure_file_path('/var/log/money-alert-watchers.log'), level=config['log_level'], format='%(asctime)s [%(levelname)s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+        logging.basicConfig(filename=src.utils.util.configure_file_path('/var/log/money-alert-watchers.log'), level=config['log_level'], format='%(asctime)s [%(levelname)s]: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
 
 def load_config():
     global config
-    config_path = util.configure_file_path('config.json')
+    config_path = src.utils.util.configure_file_path('config.json')
     with open(config_path, 'r') as config_file:
         replacements = {
             "API_BITTREX_KEY": os.getenv('API_BITTREX_KEY'),
@@ -76,7 +76,7 @@ def build_coin_list():
 
 
 def create_report_data_directory():
-    directory_name = util.configure_file_path('report/report_data/charts')
+    directory_name = src.utils.util.configure_file_path('report/report_data/charts')
     if not os.path.exists(directory_name):
         os.makedirs(directory_name)
         logger.debug(f'Creating directory: {directory_name}')

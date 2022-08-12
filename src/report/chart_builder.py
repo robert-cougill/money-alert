@@ -1,11 +1,11 @@
 import matplotlib.pyplot as plt
 import matplotlib.offsetbox as box
 import numpy
-import util
+import src.utils.util
 
 
 class ChartBuilder:
-    CONST_CHART_FILE_DIRECTORY = util.configure_file_path('report/report_data/charts/')
+    CONST_CHART_FILE_DIRECTORY = src.utils.util.configure_file_path('report/report_data/charts/')
 
     def build_charts_for_report(self, asset_history, use_title_case: bool = True):
         for asset, historical_data in asset_history.items():
