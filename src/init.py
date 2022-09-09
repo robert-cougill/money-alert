@@ -63,7 +63,7 @@ def load_config():
             'DISCORD_WEBHOOK_URL': os.getenv('DISCORD_WEBHOOK_URL')
         }
         replacements = dict((re.escape(k), v) for k, v in replacements.items())
-        pattern = re.compile('|'.join(replacements.keys()))
+        pattern = re.compile("|".join(replacements.keys()))
         config = json.loads(pattern.sub(lambda m: replacements[re.escape(m.group(0))], config_file.read()))
 
 
