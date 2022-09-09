@@ -53,16 +53,17 @@ def load_config():
     config_path = src.utils.util.configure_file_path('config.json')
     with open(config_path, 'r') as config_file:
         replacements = {
-            "API_BITTREX_KEY": os.getenv('API_BITTREX_KEY'),
-            "API_BITTREX_SECRET": os.getenv('API_BITTREX_SECRET'),
-            "API_ALPHA_VANTAGE_KEY": os.getenv('API_ALPHA_VANTAGE_KEY'),
-            "API_METAL_PRICE_KEY": os.getenv('API_METAL_PRICE_KEY'),
-            "MONEY_ALERT_EMAIL_SECRET": os.getenv('MONEY_ALERT_EMAIL_SECRET'),
-            "MONEY_ALERT_EMAIL_USERNAME": os.getenv('MONEY_ALERT_EMAIL_USERNAME'),
-            "PERSONAL_EMAILS": os.getenv('PERSONAL_EMAILS')
+            'API_BITTREX_KEY': os.getenv('API_BITTREX_KEY'),
+            'API_BITTREX_SECRET': os.getenv('API_BITTREX_SECRET'),
+            'API_ALPHA_VANTAGE_KEY': os.getenv('API_ALPHA_VANTAGE_KEY'),
+            'API_METAL_PRICE_KEY': os.getenv('API_METAL_PRICE_KEY'),
+            'MONEY_ALERT_EMAIL_SECRET': os.getenv('MONEY_ALERT_EMAIL_SECRET'),
+            'MONEY_ALERT_EMAIL_USERNAME': os.getenv('MONEY_ALERT_EMAIL_USERNAME'),
+            'PERSONAL_EMAILS': os.getenv('PERSONAL_EMAILS'),
+            'DISCORD_WEBHOOK_URL': os.getenv('DISCORD_WEBHOOK_URL')
         }
         replacements = dict((re.escape(k), v) for k, v in replacements.items())
-        pattern = re.compile("|".join(replacements.keys()))
+        pattern = re.compile('|'.join(replacements.keys()))
         config = json.loads(pattern.sub(lambda m: replacements[re.escape(m.group(0))], config_file.read()))
 
 
