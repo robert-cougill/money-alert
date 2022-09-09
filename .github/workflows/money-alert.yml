@@ -35,6 +35,7 @@ jobs:
           MONEY_ALERT_EMAIL_SECRET: ${{ secrets.MONEY_ALERT_EMAIL_SECRET }}
           MONEY_ALERT_EMAIL_USERNAME: ${{ secrets.MONEY_ALERT_EMAIL_USERNAME }}
           PERSONAL_EMAILS: ${{ secrets.PERSONAL_EMAILS }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
           sudo sed -i "s/API_BITTREX_KEY/$API_BITTREX_KEY/g" /opt/money-alert/src/config.json
           sudo sed -i "s/API_BITTREX_SECRET/$API_BITTREX_SECRET/g" /opt/money-alert/src/config.json
@@ -43,6 +44,7 @@ jobs:
           sudo sed -i "s/MONEY_ALERT_EMAIL_SECRET/$MONEY_ALERT_EMAIL_SECRET/g" /opt/money-alert/src/config.json
           sudo sed -i "s/MONEY_ALERT_EMAIL_USERNAME/$MONEY_ALERT_EMAIL_USERNAME/g" /opt/money-alert/src/config.json
           sudo sed -i "s/PERSONAL_EMAILS/$PERSONAL_EMAILS/g" /opt/money-alert/src/config.json
+          sudo sed -i "s/DISCORD_WEBHOOK_URL/$DISCORD_WEBHOOK_URL/g" /opt/money-alert/src/config.json
   set_images_variables:
     needs: copy_to_destination
     runs-on: self-hosted

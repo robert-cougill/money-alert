@@ -3,6 +3,7 @@ import src.init
 import json
 import src.report.base_report
 import time
+import requests
 
 
 class DipWatcher(src.report.base_report.Report):
@@ -58,6 +59,9 @@ class DipWatcher(src.report.base_report.Report):
 
             # only send once for the amount of time in seconds
             if (time.time() - self.last_email_sent) > 600:
+                msg = 'BTC has dipped! Current Price: ' + '{:.2f}'.format(self.price_dict['bitcoin'][0])
+                data = {'content': msg}
+                requests.post(src.init.config['clients']['discord']['webhook_url'], json=data)
                 self.last_email_sent = time.time()
                 email = src.email.email_handler.GMail()
-                email.send_email('BTC has dipped! Current Price: ' + '{:.2f}'.format(self.price_dict['bitcoin'][0]))
+                email.send_email(msg)

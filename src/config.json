@@ -34,6 +34,9 @@
             "base_url": "https://api.metalpriceapi.com/v1",
             "key": "API_METAL_PRICE_KEY",
             "requests_per_minute": 5
+        },
+        "discord": {
+            "webhook_url": "DISCORD_WEBHOOK_URL"
         }
     },
     "report_settings": {
