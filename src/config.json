@@ -106,6 +106,7 @@
         "Add actual unit test suite/framework/project/etc",
         "Add logging to trending report addressing missed integrity threshold (compounding time)",
         "Rename config values to include timespan",
-        "Handle crashes at report level so email has no issue generating chain of events prior to send"
+        "Handle crashes at report level so email has no issue generating chain of events prior to send",
+        "Handle Error 522: Connection timed out (Cloudflare)"
     ]
 }
