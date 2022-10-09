@@ -103,6 +103,9 @@
     ],
     "future_features": [
         "Specify when dormant wallets become active for dinosaur footprints - color code row older than 1 year",
-        "Add actual unit test suite/framework/project/etc"
+        "Add actual unit test suite/framework/project/etc",
+        "Add logging to trending report addressing missed integrity threshold (compounding time)",
+        "Rename config values to include timespan",
+        "Handle crashes at report level so email has no issue generating chain of events prior to send"
     ]
 }
