@@ -6,6 +6,7 @@ import src.init
 import json
 import src.report.base_report
 import src.utils.util
+import traceback
 
 
 class MovingAverages(src.report.base_report.Report):
@@ -24,24 +25,30 @@ class MovingAverages(src.report.base_report.Report):
         src.init.logger.info(f'Moving Average - Finished Building {self.CONST_REPORT_TITLE} Report Data')
 
     def run(self):
-        self.__validate_report_data()
-
-        self.charts.build_charts_for_report(self.coin_history)
-
-        coins = dict()
-        for coin, price in self.coin_history.items():
-            coins[coin] = price[0]
-
-        sorted_coins = dict(sorted(coins.items(), key=lambda item: item[1], reverse=True))
-        ordered_coins = sorted_coins.keys()
-
-        image_body = self.embed_images(src.utils.util.list_chart_files(self.CONST_CHART_FILE_DIRECTORY), ordered_coins)
         email = src.email.email_handler.GMail()
-        email.add_report_to_email('Moving Averages', image_body)
-        email.send_email('Moving Averages')
 
-        src.utils.util.remove_charts_from_directory(self.CONST_CHART_FILE_DIRECTORY)
-        src.init.logger.info('Moving Averages Report Completed')
+        try:
+            self.__validate_report_data()
+
+            self.charts.build_charts_for_report(self.coin_history)
+
+            coins = dict()
+            for coin, price in self.coin_history.items():
+                coins[coin] = price[0]
+
+            sorted_coins = dict(sorted(coins.items(), key=lambda item: item[1], reverse=True))
+            ordered_coins = sorted_coins.keys()
+
+            image_body = self.embed_images(src.utils.util.list_chart_files(self.CONST_CHART_FILE_DIRECTORY), ordered_coins)
+            email.add_report_to_email('Moving Averages', image_body)
+            email.send_email('Moving Averages')
+
+            src.utils.util.remove_charts_from_directory(self.CONST_CHART_FILE_DIRECTORY)
+            src.init.logger.info('Moving Averages Report Completed')
+
+        except Exception as e:
+            email.add_report_to_email('Moving Average', str(e) + '<br/><br/>' + traceback.format_exc())
+            return
 
     def __validate_report_data(self):
         self.__read_data_from_db()

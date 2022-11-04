@@ -3,17 +3,24 @@ import src.email.email_handler
 import src.init
 import json
 import src.report.base_report
+import traceback
 
 
 class PublicCompanyHoldings(src.report.base_report.Report):
     def __init__(self):
         src.report.base_report.Report.__init__(self)
         self.notify_companies = dict()
+        self.email = src.email.email_handler.GMail()
 
     def run(self):
-        self.get_holdings_by_coin('bitcoin')
-        self.get_holdings_by_coin('ethereum')
-        self.send_notify_companies()
+        try:
+            self.get_holdings_by_coin('bitcoin')
+            self.get_holdings_by_coin('ethereum')
+            self.send_notify_companies()
+
+        except Exception as e:
+            self.email.add_report_to_email('Public Company Holdings', str(e) + '<br/><br/>' + traceback.format_exc())
+            return
 
     def get_holdings_by_coin(self, coin_id: str):
         response = json.loads(self.coingecko.get_public_company_holdings(coin_id))
@@ -54,11 +61,11 @@ class PublicCompanyHoldings(src.report.base_report.Report):
         con.close()
 
     def send_notify_companies(self):
-        email = src.email.email_handler.GMail()
+        src.init.logger.info(f'Public Company Holdings - Companies Holdings Changed: {len(self.notify_companies)}')
         if len(self.notify_companies) > 0:
             table = self.build_html_table(['Company', 'Coin', 'Change', 'Balance'], self.notify_companies, 'public_company_holdings')
-            email.add_report_to_email('Public Company Holdings', table)
+            self.email.add_report_to_email('Public Company Holdings', table)
             return
 
-        email.add_report_to_email('Public Company Holdings', self.build_no_data_result())
+        self.email.add_report_to_email('Public Company Holdings', self.build_no_data_result())
         src.init.logger.info(f'Public Company Holdings - Companies Changed: {len(self.notify_companies)}')

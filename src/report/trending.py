@@ -4,6 +4,7 @@ import src.init
 import json
 import src.report.base_report
 import time
+import traceback
 
 
 class Trending(src.report.base_report.Report):
@@ -18,19 +19,26 @@ class Trending(src.report.base_report.Report):
         self.email_trenders = False
 
     def run(self):
-        self.__pull_trenders_and_update_trending_tracker()
         email = src.email.email_handler.GMail()
-        wallets = dict((k, v) for k, v in self.trenders.items() if v >= 5)
 
-        if self.email_trenders:
-            self.formatted_response = [(key, value) for key, value in self.trenders.items()]
-            self.formatted_response = {key: value for key, value in sorted(self.formatted_response, key=lambda x: x[1]) if value >= src.init.config['report_settings']['trending_report_appearance_threshold']}
-            table = self.build_html_table(['Coin', 'Appearances'], self.formatted_response, 'trending')
-            email.add_report_to_email('Trending Report', table)
+        try:
+            self.__pull_trenders_and_update_trending_tracker()
+            wallets = dict((k, v) for k, v in self.trenders.items() if v >= 5)
+            src.init.logger.info(f'Trending Report - Wallets Found: {len(wallets.keys())}')
+
+            if self.email_trenders:
+                self.formatted_response = [(key, value) for key, value in self.trenders.items()]
+                self.formatted_response = {key: value for key, value in sorted(self.formatted_response, key=lambda x: x[1]) if value >= src.init.config['report_settings']['trending_report_appearance_threshold']}
+                table = self.build_html_table(['Coin', 'Appearances'], self.formatted_response, 'trending')
+                email.add_report_to_email('Trending Report', table)
+                return
+
+            email.add_report_to_email('Trending Report', self.build_no_data_result())
+            src.init.logger.info(f'Trending Report - Wallets Found: {len(wallets.keys())}')
+
+        except Exception as e:
+            email.add_report_to_email('Trending Report', str(e) + '<br/><br/>' + traceback.format_exc())
             return
-
-        email.add_report_to_email('Trending Report', self.build_no_data_result())
-        src.init.logger.info(f'Trending Report - Wallets Found: {len(wallets.keys())}')
 
     def __pull_trenders_and_update_trending_tracker(self):
         last_modify_date = 0
@@ -44,6 +52,7 @@ class Trending(src.report.base_report.Report):
                     last_modify_date = row[2]
 
         if (time.time() - last_modify_date) > self.CONST_DATA_INTEGRITY_THRESHOLD:
+            src.init.logger.warn(f'Unix timestamp {time.time()} minus the last modify date of {last_modify_date} is greater than the data integrity threshold of {self.CONST_DATA_INTEGRITY_THRESHOLD}. This happens almost imperceptibly as compounding time from delays in processing move the target window outside of acceptable bounds.')
             self.trenders = dict()
         elif (time.time() - last_modify_date) < (self.CONST_DAY_IN_SECONDS - self.CONST_FIVE_MINUTES_IN_SECONDS):
             src.init.logger.info('Trending Report - Less than a day has passed since the last Trending report run')
