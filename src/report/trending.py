@@ -28,10 +28,7 @@ class Trending(src.report.base_report.Report):
 
             if self.email_trenders:
                 self.formatted_response = [(key, value) for key, value in self.trenders.items()]
-                self.formatted_response = {key: value for key, value in
-                                           sorted(self.formatted_response, key=lambda x: x[1]) if
-                                           value >= src.init.config['report_settings'][
-                                               'trending_report_appearance_threshold']}
+                self.formatted_response = {key: value for key, value in sorted(self.formatted_response, key=lambda x: x[1]) if value >= src.init.config['report_settings']['trending_report_appearance_threshold']}
                 table = self.build_html_table(['Coin', 'Appearances'], self.formatted_response, 'trending')
                 email.add_report_to_email('Trending Report', table)
                 return
