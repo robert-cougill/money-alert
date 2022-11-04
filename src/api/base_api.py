@@ -29,11 +29,13 @@ class BaseAPI:
         int(503),
         # 504 - Gateway Timeout
         int(504),
-        # 524 - Cloudflare Gateway Timeout
+        # 522 - Cloudflare Gateway Timeout - Server cannot be reached
+        int(522),
+        # 524 - Cloudflare Gateway Timeout - Connection received, untimely response
         int(524)
     ]
 
-    def request_data(self, client: src.enums.APIClient, endpoint: str, method: src.enums.RequestMethod = src.enums.RequestMethod.GET, endpoint_args='', params: typing.Optional[typing.Dict] = None, body: typing.Optional[typing.Dict] = None, use_secondary_url: bool = False):
+    def request_data(self, client: src.enums.APIClient, endpoint: str, method: src.enums.RequestMethod = src.enums.RequestMethod.GET, endpoint_args='', params: typing.Optional[typing.Dict] = None, body: typing.Optional[typing.Dict] = None, continue_on_error: bool = False):
         base_url = src.init.config['clients'][client.value]['base_url']
 
         # region API Rate Limiting
@@ -54,6 +56,11 @@ class BaseAPI:
 
             response = requests.request(method.value, url, params=None, data=body)
             self.__check_response_code(url, response.status_code)
+
+            if continue_on_error and response.status_code != self.CONST_STATUS_OK:
+                src.init.logger.warning(f'Continue on Error Triggered - URL: [{url}] | Status Code: {response.status_code}')
+                return None
+
             if response.status_code in self.CONST_HTTP_ERROR_CODES:
                 response = self.__retry_request(method, url, None, None, body)
 
@@ -67,6 +74,11 @@ class BaseAPI:
 
             response = requests.request(method.value, url, params=params)
             self.__check_response_code(url, response.status_code)
+
+            if continue_on_error and response.status_code != self.CONST_STATUS_OK:
+                src.init.logger.warning(f'Continue on Error Triggered - URL: [{url}] | Status Code: {response.status_code}')
+                return None
+
             if response.status_code in self.CONST_HTTP_ERROR_CODES:
                 response = self.__retry_request(method, url, params)
 
@@ -97,6 +109,11 @@ class BaseAPI:
 
             response = requests.request(method.value, url, params=None, headers=headers, data=body)
             self.__check_response_code(url, response.status_code)
+
+            if continue_on_error and response.status_code != self.CONST_STATUS_OK:
+                src.init.logger.warning(f'Continue on Error Triggered - URL: [{url}] | Status Code: {response.status_code}')
+                return None
+
             if response.status_code in self.CONST_HTTP_ERROR_CODES:
                 response = self.__retry_request(method, url, None, headers, body)
 
@@ -115,6 +132,11 @@ class BaseAPI:
 
             response = requests.request(method.value, url, headers=headers)
             self.__check_response_code(url, response.status_code)
+
+            if continue_on_error and response.status_code != self.CONST_STATUS_OK:
+                src.init.logger.warning(f'Continue on Error Triggered - URL: [{url}] | Status Code: {response.status_code}')
+                return None
+
             if response.status_code in self.CONST_HTTP_ERROR_CODES:
                 response = self.__retry_request(method, url, params, headers)
 
@@ -129,6 +151,11 @@ class BaseAPI:
 
             response = requests.request(method.value, url, params=params)
             self.__check_response_code(url, response.status_code)
+
+            if continue_on_error and response.status_code != self.CONST_STATUS_OK:
+                src.init.logger.warning(f'Continue on Error Triggered - URL: [{url}] | Status Code: {response.status_code}')
+                return None
+
             if response.status_code in self.CONST_HTTP_ERROR_CODES:
                 response = self.__retry_request(method, url, params)
 

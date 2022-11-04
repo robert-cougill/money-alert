@@ -21,7 +21,6 @@ class Trending(src.report.base_report.Report):
         self.__pull_trenders_and_update_trending_tracker()
         email = src.email.email_handler.GMail()
         wallets = dict((k, v) for k, v in self.trenders.items() if v >= 5)
-        src.init.logger.info(f'Trending Report - Wallets Found: {len(wallets.keys())}')
 
         if self.email_trenders:
             self.formatted_response = [(key, value) for key, value in self.trenders.items()]
@@ -31,6 +30,7 @@ class Trending(src.report.base_report.Report):
             return
 
         email.add_report_to_email('Trending Report', self.build_no_data_result())
+        src.init.logger.info(f'Trending Report - Wallets Found: {len(wallets.keys())}')
 
     def __pull_trenders_and_update_trending_tracker(self):
         last_modify_date = 0

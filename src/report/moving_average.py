@@ -41,7 +41,7 @@ class MovingAverages(src.report.base_report.Report):
         email.send_email('Moving Averages')
 
         src.utils.util.remove_charts_from_directory(self.CONST_CHART_FILE_DIRECTORY)
-        src.init.logger.info('Moving Average - Report Ran')
+        src.init.logger.info('Moving Averages Report Completed')
 
     def __validate_report_data(self):
         self.__read_data_from_db()

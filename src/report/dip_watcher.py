@@ -20,7 +20,7 @@ class DipWatcher(src.report.base_report.Report):
         eight_hour_percent_change = 0
         twelve_hour_percent_change = 0
 
-        current_price = self.blockchain.get_current_price('BTC-USD')
+        current_price = self.blockchain.get_current_price('BTC-USD', True)
         if current_price is None:
             src.init.logger.info('Dip Watcher - API returned a null value')
             return

@@ -54,7 +54,6 @@ class PublicCompanyHoldings(src.report.base_report.Report):
         con.close()
 
     def send_notify_companies(self):
-        src.init.logger.info(f'Public Company Holdings - Companies Holdings Changed: {len(self.notify_companies)}')
         email = src.email.email_handler.GMail()
         if len(self.notify_companies) > 0:
             table = self.build_html_table(['Company', 'Coin', 'Change', 'Balance'], self.notify_companies, 'public_company_holdings')
@@ -62,3 +61,4 @@ class PublicCompanyHoldings(src.report.base_report.Report):
             return
 
         email.add_report_to_email('Public Company Holdings', self.build_no_data_result())
+        src.init.logger.info(f'Public Company Holdings - Companies Changed: {len(self.notify_companies)}')
