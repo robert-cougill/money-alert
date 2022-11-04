@@ -44,6 +44,7 @@ class Trending(src.report.base_report.Report):
                     last_modify_date = row[2]
 
         if (time.time() - last_modify_date) > self.CONST_DATA_INTEGRITY_THRESHOLD:
+            src.init.logger.warn(f'Unix timestamp {time.time()} minus the last modify date of {last_modify_date} is greater than the data integrity threshold of {self.CONST_DATA_INTEGRITY_THRESHOLD}. This happens almost imperceptibly as compounding time from delays in processing move the target window outside of acceptable bounds.')
             self.trenders = dict()
         elif (time.time() - last_modify_date) < (self.CONST_DAY_IN_SECONDS - self.CONST_FIVE_MINUTES_IN_SECONDS):
             src.init.logger.info('Trending Report - Less than a day has passed since the last Trending report run')

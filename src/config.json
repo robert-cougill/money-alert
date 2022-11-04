@@ -1,112 +1,109 @@
 {
-    "log_level": "INFO",
-    "email": {
-        "hostname": "smtp.gmail.com",
-        "username": "MONEY_ALERT_EMAIL_USERNAME",
-        "secret": "MONEY_ALERT_EMAIL_SECRET"
+  "log_level": "INFO",
+  "email": {
+    "hostname": "smtp.gmail.com",
+    "username": "MONEY_ALERT_EMAIL_USERNAME",
+    "secret": "MONEY_ALERT_EMAIL_SECRET"
+  },
+  "clients": {
+    "bittrex": {
+      "base_url": "https://api.bittrex.com/v3",
+      "key": "API_BITTREX_KEY",
+      "secret": "API_BITTREX_SECRET",
+      "requests_per_minute": 60
     },
-    "clients": {
-        "bittrex": {
-            "base_url": "https://api.bittrex.com/v3",
-            "key": "API_BITTREX_KEY",
-            "secret": "API_BITTREX_SECRET",
-            "requests_per_minute": 60
-        },
-        "blockchain": {
-            "base_url": "https://blockchain.info",
-            "requests_per_minute": 60
-        },
-        "blockchain-v3": {
-            "base_url": "https://api.blockchain.com/v3/exchange",
-            "requests_per_minute": 60
-        },
-        "coingecko": {
-            "base_url": "https://api.coingecko.com/api/v3",
-            "requests_per_minute": 45
-        },
-        "alpha-vantage": {
-            "base_url": "https://alpha-vantage.p.rapidapi.com",
-            "host": "alpha-vantage.p.rapidapi.com",
-            "key": "API_ALPHA_VANTAGE_KEY",
-            "requests_per_minute": 5
-        },
-        "metal-price": {
-            "base_url": "https://api.metalpriceapi.com/v1",
-            "key": "API_METAL_PRICE_KEY",
-            "requests_per_minute": 5
-        },
-        "discord": {
-            "webhook_url": "DISCORD_WEBHOOK_URL"
-        }
+    "blockchain": {
+      "base_url": "https://blockchain.info",
+      "requests_per_minute": 60
     },
-    "report_settings": {
-        "daily_report_run_time": "10:00",
-        "dinosaur_footprints_btc_transaction_threshold": 5,
-        "dip_watcher_percentage_threshold": -5,
-        "trending_report_appearance_threshold": 5
+    "blockchain-v3": {
+      "base_url": "https://api.blockchain.com/v3/exchange",
+      "requests_per_minute": 60
     },
-    "coin_list": {
-        "ada": "cardano",
-        "amp": "amp-token",
-        "algo": "algorand",
-        "atom": "cosmos",
-        "bal": "balancer",
-        "bat": "basic-attention-token",
-        "btc": "bitcoin",
-        "comp": "compound-governance-token",
-        "eos": "eos",
-        "eth": "ethereum",
-        "grt": "the-graph",
-        "hbar": "hedera-hashgraph",
-        "link": "chainlink",
-        "matic": "matic-network",
-        "mkr": "maker",
-        "xlm": "stellar",
-        "xrp": "ripple",
-        "xtz": "tezos",
-        "zrx": "0x"
+    "coingecko": {
+      "base_url": "https://api.coingecko.com/api/v3",
+      "requests_per_minute": 45
     },
-    "stock_symbols": ["LVOX"],
-    "metal_symbols": ["XAU","XAG"],
-    "emails": ["PERSONAL_EMAILS"],
-    "no_data_images": [
-        "12EsqUCIFhYHStFh9PBDk4mpI7-gbqPbz",
-        "1Cy-DBfrz-secL-7mzRGzYYyMe5Vg-GlB",
-        "1DmIRPQZB4JrFigKFqShHcDKX-Nj51mmJ",
-        "1otXS8VsfcM0Q1hivKQJEY2_9qeDcFLcw",
-        "1HQGcvl7kP8O2dEK0zAyWGklxsS9VtMHi",
-        "1PGqXrWO61tt3m6wZSD9dtyvENALKDjGX",
-        "1QxUVF82Cum5BA-7JpCZOlEwWGyMCBX9M",
-        "1WDplINYlmGrDasEa2p7mUGky3QnKIxa6",
-        "1_PgdTvdbN8xcHS_UnnK36BaAF3nbZmT-",
-        "1HIMxmsQch8Pzm1d9MbQ73AG-RJqZ5BHZ",
-        "1bEwgE9tO0EsXKy1pnoJiWzOUJnYTYkBi",
-        "1fZ-36CNu5UR2nrZIxUbPaABKzeIWBk-e",
-        "1gFI0GlEo7pJ_f5FUojh_qR8x3ADKQkL_",
-        "19voVo7C64kV-teEhTd6NsB7IKoL0DEPs",
-        "1l3g4tPwdsALqlobhpMEnlDGfkyShDH3J",
-        "1hQLldkiHjkeZvWzofkRqzCOVcjrRiVyg",
-        "1hdQNlSTFaTPg-ev3n_8jLPtkcv2MFpps",
-        "1hPijyIV4QkcCiqdv6nEhrGBkucJrz-FT",
-        "1hq2Pq5g8owTkLDMDjF8jJKA3mtWoLOPh",
-        "14UFT9y1I63sWwwmYDPbRnLhISVCPxxeh",
-        "1m3r9u5JaSX5DkyPoFcKJ2KO_LHK583wB",
-        "1mUnoyGH4INnJxn6QM9pc5Y0XrDgw4SWi",
-        "1nU5uAv5TKnAbdXAE0Ch6iAOs3ALxfDZp",
-        "1sUeqXx_o9ZB91PLHWj2-HJrgTvfspn8e",
-        "1o-OQTGANVdfbSVqrKiSarmDbfc6dwCAe",
-        "1tPQoKudfNgYVPVdOMBim2tW_D06R6cd_",
-        "1vLw7q76i9Rz14o0OA3q2T545BYmVx8sQ",
-        "1vbuJUqKZeHhUi4rSQUL-ZcOgDuO2CV5z",
-        "1viAeEeg1l8QsaUOD9gQI8hxcJDbCHnwt",
-        "1ynpxAvLcPVNA4mxSye7MD3xzUqWMeRJB"
-    ],
-    "future_features": [
-        "Specify when dormant wallets become active for dinosaur footprints - color code row older than 1 year",
-        "Add actual unit test suite/framework/project/etc",
-        "Add logging to trending report addressing missed integrity threshold (compounding time)",
-        "Rename config values to include timespan",
-        "Handle crashes at report level so email has no issue generating chain of events prior to send",
-        "Handle Error 522: Connection timed out (Cloudflare)"
-    ]
+    "alpha-vantage": {
+      "base_url": "https://alpha-vantage.p.rapidapi.com",
+      "host": "alpha-vantage.p.rapidapi.com",
+      "key": "API_ALPHA_VANTAGE_KEY",
+      "requests_per_minute": 5
+    },
+    "metal-price": {
+      "base_url": "https://api.metalpriceapi.com/v1",
+      "key": "API_METAL_PRICE_KEY",
+      "requests_per_minute": 5
+    },
+    "discord": {
+      "webhook_url": "DISCORD_WEBHOOK_URL"
+    }
+  },
+  "report_settings": {
+    "daily_report_run_time": "10:00",
+    "dinosaur_footprints_btc_transaction_threshold": 5,
+    "dip_watcher_percentage_threshold": -5,
+    "trending_report_appearance_threshold": 5
+  },
+  "coin_list": {
+    "ada": "cardano",
+    "amp": "amp-token",
+    "algo": "algorand",
+    "atom": "cosmos",
+    "bal": "balancer",
+    "bat": "basic-attention-token",
+    "btc": "bitcoin",
+    "comp": "compound-governance-token",
+    "eos": "eos",
+    "eth": "ethereum",
+    "grt": "the-graph",
+    "hbar": "hedera-hashgraph",
+    "link": "chainlink",
+    "matic": "matic-network",
+    "mkr": "maker",
+    "xlm": "stellar",
+    "xrp": "ripple",
+    "xtz": "tezos",
+    "zrx": "0x"
+  },
+  "stock_symbols": ["LVOX"],
+  "metal_symbols": ["XAU","XAG"],
+  "emails": ["PERSONAL_EMAILS"],
+  "no_data_images": [
+    "12EsqUCIFhYHStFh9PBDk4mpI7-gbqPbz",
+    "1Cy-DBfrz-secL-7mzRGzYYyMe5Vg-GlB",
+    "1DmIRPQZB4JrFigKFqShHcDKX-Nj51mmJ",
+    "1otXS8VsfcM0Q1hivKQJEY2_9qeDcFLcw",
+    "1HQGcvl7kP8O2dEK0zAyWGklxsS9VtMHi",
+    "1PGqXrWO61tt3m6wZSD9dtyvENALKDjGX",
+    "1QxUVF82Cum5BA-7JpCZOlEwWGyMCBX9M",
+    "1WDplINYlmGrDasEa2p7mUGky3QnKIxa6",
+    "1_PgdTvdbN8xcHS_UnnK36BaAF3nbZmT-",
+    "1HIMxmsQch8Pzm1d9MbQ73AG-RJqZ5BHZ",
+    "1bEwgE9tO0EsXKy1pnoJiWzOUJnYTYkBi",
+    "1fZ-36CNu5UR2nrZIxUbPaABKzeIWBk-e",
+    "1gFI0GlEo7pJ_f5FUojh_qR8x3ADKQkL_",
+    "19voVo7C64kV-teEhTd6NsB7IKoL0DEPs",
+    "1l3g4tPwdsALqlobhpMEnlDGfkyShDH3J",
+    "1hQLldkiHjkeZvWzofkRqzCOVcjrRiVyg",
+    "1hdQNlSTFaTPg-ev3n_8jLPtkcv2MFpps",
+    "1hPijyIV4QkcCiqdv6nEhrGBkucJrz-FT",
+    "1hq2Pq5g8owTkLDMDjF8jJKA3mtWoLOPh",
+    "14UFT9y1I63sWwwmYDPbRnLhISVCPxxeh",
+    "1m3r9u5JaSX5DkyPoFcKJ2KO_LHK583wB",
+    "1mUnoyGH4INnJxn6QM9pc5Y0XrDgw4SWi",
+    "1nU5uAv5TKnAbdXAE0Ch6iAOs3ALxfDZp",
+    "1sUeqXx_o9ZB91PLHWj2-HJrgTvfspn8e",
+    "1o-OQTGANVdfbSVqrKiSarmDbfc6dwCAe",
+    "1tPQoKudfNgYVPVdOMBim2tW_D06R6cd_",
+    "1vLw7q76i9Rz14o0OA3q2T545BYmVx8sQ",
+    "1vbuJUqKZeHhUi4rSQUL-ZcOgDuO2CV5z",
+    "1viAeEeg1l8QsaUOD9gQI8hxcJDbCHnwt",
+    "1ynpxAvLcPVNA4mxSye7MD3xzUqWMeRJB"
+  ],
+  "future_features": [
+    "Specify when dormant wallets become active for dinosaur footprints - color code row older than 1 year",
+    "Add actual unit test suite/framework/project/etc",
+    "Handle crashes at report level so email has no issue generating chain of events prior to send"
+  ]
 }
