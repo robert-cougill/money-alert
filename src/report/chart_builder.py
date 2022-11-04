@@ -33,7 +33,6 @@ class ChartBuilder:
         else:
             ax.set(title=asset_name, xlabel='Days', ylabel='Price (USD)')
 
-
         # Plot list, min, and max values
         ax.plot(x, historic_data, linestyle='-', color='#127700')
         ax.plot(max_x, max_y, marker='o', color='#33d23d')

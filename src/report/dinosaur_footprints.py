@@ -9,6 +9,7 @@ import requests
 import socket
 import urllib3
 import src.utils.util
+import traceback
 
 
 class DinosaurFootprints(src.report.base_report.Report):
@@ -19,14 +20,20 @@ class DinosaurFootprints(src.report.base_report.Report):
         self.insertion_wallet_addresses = []
         self.notify_nonexchange = dict()
         self.notify_exchange = dict()
+        self.email = src.email.email_handler.GMail()
 
     def run(self):
-        self.__scrape_website('https://btc.com/stats/rich-list', 'table')
-        self.__scrape_website('https://99bitcoins.com/bitcoin-rich-list-top500/', 't99btc-rich-list')
-        self.__scrape_website('https://99bitcoins.com/bitcoin-rich-list-top1000/', 't99btc-rich-list')
-        self.__add_new_wallet_addresses()
-        self.__get_wallet_information()
-        self.__attach_table_to_email()
+        try:
+            self.__scrape_website('https://btc.com/stats/rich-list', 'table')
+            self.__scrape_website('https://99bitcoins.com/bitcoin-rich-list-top500/', 't99btc-rich-list')
+            self.__scrape_website('https://99bitcoins.com/bitcoin-rich-list-top1000/', 't99btc-rich-list')
+            self.__add_new_wallet_addresses()
+            self.__get_wallet_information()
+            self.__attach_table_to_email()
+
+        except Exception as e:
+            self.email.add_report_to_email('Dinosaur Footprints', str(e) + '<br/><br/>' + traceback.format_exc())
+            return
 
     def pull_named_wallets(self):
         self.__bitinfocharts_pull_named_wallets()
@@ -199,16 +206,15 @@ class DinosaurFootprints(src.report.base_report.Report):
     def __attach_table_to_email(self):
         src.init.logger.info(f'Dinosaur Footprints - Non-Exchange Wallets Found: {len(self.notify_nonexchange)}')
         src.init.logger.info(f'Dinosaur Footprints - Exchange Wallets Found: {len(self.notify_exchange)}')
-        email = src.email.email_handler.GMail()
 
         if len(self.notify_nonexchange) == 0:
-            email.add_report_to_email('Dinosaur Footprints - Non-Exchange Report', self.build_no_data_result())
+            self.email.add_report_to_email('Dinosaur Footprints - Non-Exchange Report', self.build_no_data_result())
         else:
             nonexchange_table = self.build_html_table(['Wallet', 'Balance Change'], self.notify_nonexchange, 'dinosaur_footprints')
-            email.add_report_to_email('Dinosaur Footprints - Non-Exchange Report', nonexchange_table)
+            self.email.add_report_to_email('Dinosaur Footprints - Non-Exchange Report', nonexchange_table)
 
         if len(self.notify_exchange) == 0:
-            email.add_report_to_email('Dinosaur Footprints - Exchange Report', self.build_no_data_result())
+            self.email.add_report_to_email('Dinosaur Footprints - Exchange Report', self.build_no_data_result())
         else:
             exchange_table = self.build_html_table(['Wallet', 'Balance Change'], self.notify_exchange, 'dinosaur_footprints')
-            email.add_report_to_email('Dinosaur Footprints - Exchange Report', exchange_table)
+            self.email.add_report_to_email('Dinosaur Footprints - Exchange Report', exchange_table)
