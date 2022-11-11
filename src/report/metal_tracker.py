@@ -32,6 +32,7 @@ class MetalTracker(src.report.base_report.Report):
                         rates.append(1/metal[symbol])
 
                 name = self.metal_names[symbol]
+                rates.reverse()
                 self.metal_history[name] = rates
 
             self.charts.build_charts_for_report(self.metal_history, False)
