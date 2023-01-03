@@ -9,7 +9,7 @@ jobs:
     runs-on: self-hosted
     steps:
     - name: Update source code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
   copy_to_destination:
     needs: update_source_code
     runs-on: self-hosted
