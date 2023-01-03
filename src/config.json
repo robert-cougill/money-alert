@@ -42,6 +42,7 @@
   "report_settings": {
     "daily_report_run_time": "10:00",
     "dinosaur_footprints_btc_transaction_threshold": 5,
+    "dinosaur_footprints_wallet_activity_window": 10,
     "dip_watcher_percentage_threshold": -5,
     "trending_report_appearance_threshold": 5
   },
