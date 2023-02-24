@@ -1,5 +1,4 @@
 import ast
-import datetime
 import time
 
 import bs4
