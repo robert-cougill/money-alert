@@ -1,5 +1,5 @@
 import ast
-import datetime
+import time
 
 import bs4
 import collections
@@ -189,15 +189,16 @@ class DinosaurFootprints(src.report.base_report.Report):
         if len(self.notify_nonexchange) > 0:
             for key, value in self.notify_nonexchange.items():
                 if f"{key}|{value}" in self.notification_tracker:
-                    if self.notification_tracker[f"{key}|{value}"] < datetime.datetime.utcnow() - datetime.timedelta(days=src.init.config['report_settings']['dinosaur_footprints_wallet_activity_window']):
+                    timedelta = src.init.config['report_settings']['dinosaur_footprints_wallet_activity_window'] * 24 * 60 * 60
+                    if self.notification_tracker[f"{key}|{value}"] < int(time.time()) - timedelta:
                         self.notification_tracker.pop(f"{key}|{value}")
             self.notify_nonexchange = self.__sort_dictionary(self.notify_nonexchange)
 
         if len(self.notify_exchange) > 0:
             for key, value in self.notify_exchange.items():
-                if f"{key}|{value}" in self.notification_tracker:
-                    if self.notification_tracker[f"{key}|{value}"] < datetime.datetime.utcnow() - datetime.timedelta(days=src.init.config['report_settings']['dinosaur_footprints_wallet_activity_window']):
-                        self.notification_tracker.pop(f"{key}|{value}")
+                timedelta = src.init.config['report_settings']['dinosaur_footprints_wallet_activity_window'] * 24 * 60 * 60
+                if self.notification_tracker[f"{key}|{value}"] < int(time.time()) - timedelta:
+                    self.notification_tracker.pop(f"{key}|{value}")
             self.notify_exchange = self.__sort_dictionary(self.notify_exchange)
 
     @staticmethod
@@ -211,10 +212,10 @@ class DinosaurFootprints(src.report.base_report.Report):
             if balance_diff > src.init.config['report_settings']['dinosaur_footprints_btc_transaction_threshold'] or balance_diff < -src.init.config['report_settings']['dinosaur_footprints_btc_transaction_threshold']:
                 if db_wallet['exchange_wallet'] == 0:
                     self.notify_nonexchange[wallet_address] = balance_diff
-                    self.notification_tracker[f"{wallet_address}|{balance_diff}"] = datetime.datetime.utcnow()
+                    self.notification_tracker[f"{wallet_address}|{balance_diff}"] = int(time.time())
                 if db_wallet['exchange_wallet'] == 1:
                     self.notify_exchange[wallet_address] = balance_diff
-                    self.notification_tracker[f"{wallet_address}|{balance_diff}"] = datetime.datetime.utcnow()
+                    self.notification_tracker[f"{wallet_address}|{balance_diff}"] = int(time.time())
 
     def __attach_table_to_email(self):
         src.init.logger.info(f'Dinosaur Footprints - Non-Exchange Wallets Found: {len(self.notify_nonexchange)}')
