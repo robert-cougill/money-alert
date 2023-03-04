@@ -196,9 +196,10 @@ class DinosaurFootprints(src.report.base_report.Report):
 
         if len(self.notify_exchange) > 0:
             for key, value in self.notify_exchange.items():
-                timedelta = src.init.config['report_settings']['dinosaur_footprints_wallet_activity_window'] * 24 * 60 * 60
-                if self.notification_tracker[f"{key}|{value}"] < int(time.time()) - timedelta:
-                    self.notification_tracker.pop(f"{key}|{value}")
+                if f"{key}|{value}" in self.notification_tracker:
+                    timedelta = src.init.config['report_settings']['dinosaur_footprints_wallet_activity_window'] * 24 * 60 * 60
+                    if self.notification_tracker[f"{key}|{value}"] < int(time.time()) - timedelta:
+                        self.notification_tracker.pop(f"{key}|{value}")
             self.notify_exchange = self.__sort_dictionary(self.notify_exchange)
 
     @staticmethod
