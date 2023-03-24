@@ -17,6 +17,7 @@ class Trending(src.report.base_report.Report):
         self.formatted_response = None
         self.trenders = dict()
         self.email_trenders = False
+        self.data_threshold = False
 
     def run(self):
         email = src.email.email_handler.GMail()
@@ -24,7 +25,11 @@ class Trending(src.report.base_report.Report):
         try:
             self.__pull_trenders_and_update_trending_tracker()
             wallets = dict((k, v) for k, v in self.trenders.items() if v >= 5)
-            src.init.logger.info(f'Trending Report - Wallets Found: {len(wallets.keys())}')
+
+            if self.data_threshold:
+                email.add_report_to_email('Trending Report - Data Integrity Reset', self.build_no_data_result())
+                self.data_threshold = False
+                return
 
             if self.email_trenders:
                 self.formatted_response = [(key, value) for key, value in self.trenders.items()]
@@ -53,7 +58,12 @@ class Trending(src.report.base_report.Report):
 
         if (time.time() - last_modify_date) > self.CONST_DATA_INTEGRITY_THRESHOLD:
             src.init.logger.warn(f'Unix timestamp {time.time()} minus the last modify date of {last_modify_date} is greater than the data integrity threshold of {self.CONST_DATA_INTEGRITY_THRESHOLD}. This happens almost imperceptibly as compounding time from delays in processing move the target window outside of acceptable bounds.')
-            self.trenders = dict()
+            con.cursor().executemany('DELETE FROM trending_report_data')
+            con.commit()
+            con.close()
+            self.data_threshold = True
+            return
+
         elif (time.time() - last_modify_date) < (self.CONST_DAY_IN_SECONDS - self.CONST_FIVE_MINUTES_IN_SECONDS):
             src.init.logger.info('Trending Report - Less than a day has passed since the last Trending report run')
             return
@@ -99,7 +109,6 @@ class Trending(src.report.base_report.Report):
         con.cursor().executemany('DELETE FROM trending_report_data WHERE coingecko_id=?', delete_list)
         con.commit()
         con.close()
-        src.init.logger.debug(f'Trending Report - trending_report_data Table Contents {insert_list}')
 
     def __check_trenders_email_threshold(self):
         for appearance in self.trenders.values():
