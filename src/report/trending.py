@@ -58,7 +58,7 @@ class Trending(src.report.base_report.Report):
 
         if (time.time() - last_modify_date) > self.CONST_DATA_INTEGRITY_THRESHOLD:
             src.init.logger.warn(f'Unix timestamp {time.time()} minus the last modify date of {last_modify_date} is greater than the data integrity threshold of {self.CONST_DATA_INTEGRITY_THRESHOLD}. This happens almost imperceptibly as compounding time from delays in processing move the target window outside of acceptable bounds.')
-            con.cursor().executemany('DELETE FROM trending_report_data')
+            con.cursor().execute('DELETE FROM trending_report_data')
             con.commit()
             con.close()
             self.data_threshold = True
