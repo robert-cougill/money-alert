@@ -187,7 +187,8 @@ class DinosaurFootprints(src.report.base_report.Report):
 
         con.commit()
         if len(self.notify_nonexchange) > 0:
-            for key, value in self.notify_nonexchange.items():
+            deletion_tracker = self.notify_nonexchange.items()
+            for key, value in deletion_tracker:
                 if f"{key}|{value}" in self.notification_tracker:
                     timedelta = src.init.config['report_settings']['dinosaur_footprints_wallet_activity_window'] * 24 * 60 * 60
                     if self.notification_tracker[f"{key}|{value}"] < int(time.time()) - timedelta:
@@ -196,7 +197,8 @@ class DinosaurFootprints(src.report.base_report.Report):
             self.notify_nonexchange = self.__sort_dictionary(self.notify_nonexchange)
 
         if len(self.notify_exchange) > 0:
-            for key, value in self.notify_exchange.items():
+            deletion_tracker = self.notify_exchange.items()
+            for key, value in deletion_tracker:
                 if f"{key}|{value}" in self.notification_tracker:
                     timedelta = src.init.config['report_settings']['dinosaur_footprints_wallet_activity_window'] * 24 * 60 * 60
                     if self.notification_tracker[f"{key}|{value}"] < int(time.time()) - timedelta:
